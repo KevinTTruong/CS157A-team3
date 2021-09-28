@@ -14,11 +14,12 @@
    </tr>
     <% 
      	String db = "";
-		String table = "";
+		String table = "hw1";
 		String user = "";
+		String pass = "";
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, "");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 			out.println("\""+db+"\" database successfully opened.<br/><br/>");
 				
 			out.println("Initial entries in table \""+table+"\": <br/>");
