@@ -13,12 +13,12 @@
         <td>Age</td>
    </tr>
     <% 
-     	String db = "";
-		String table = "hw1";
-		String user = "";
-		String pass = "";
+     	String db = "planner";
+		String table = "tasks";
+		String user = "docket";
+		String pass = "!d0ckeT2t3";
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 			out.println("\""+db+"\" database successfully opened.<br/><br/>");
 				
