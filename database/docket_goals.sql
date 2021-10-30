@@ -16,30 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `tasks`
+-- Table structure for table `goals`
 --
 
-DROP TABLE IF EXISTS `tasks`;
+DROP TABLE IF EXISTS `goals`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tasks` (
+CREATE TABLE `goals` (
   `account_id` int NOT NULL,
-  `task_id` int NOT NULL,
-  `title` varchar(100) DEFAULT 'Unnamed task',
-  `description` text,
-  `date` date NOT NULL,
-  `time` time NOT NULL,
-  PRIMARY KEY (`account_id`,`task_id`)
+  `goal_id` int NOT NULL,
+  `goal` text NOT NULL,
+  PRIMARY KEY (`goal_id`,`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tasks`
+-- Dumping data for table `goals`
 --
 
-LOCK TABLES `tasks` WRITE;
-/*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+LOCK TABLES `goals` WRITE;
+/*!40000 ALTER TABLE `goals` DISABLE KEYS */;
+/*!40000 ALTER TABLE `goals` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-29 17:24:07
+-- Dump completed on 2021-10-29 17:24:06
