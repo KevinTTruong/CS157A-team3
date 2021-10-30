@@ -16,30 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `tasks`
+-- Table structure for table `notes`
 --
 
-DROP TABLE IF EXISTS `tasks`;
+DROP TABLE IF EXISTS `notes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tasks` (
+CREATE TABLE `notes` (
   `account_id` int NOT NULL,
-  `task_id` int NOT NULL,
-  `title` varchar(100) DEFAULT 'Unnamed task',
-  `description` text,
-  `date` date NOT NULL,
-  `time` time NOT NULL,
-  PRIMARY KEY (`account_id`,`task_id`)
+  `note_id` int NOT NULL,
+  `notes` text NOT NULL,
+  PRIMARY KEY (`account_id`,`note_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tasks`
+-- Dumping data for table `notes`
 --
 
-LOCK TABLES `tasks` WRITE;
-/*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+LOCK TABLES `notes` WRITE;
+/*!40000 ALTER TABLE `notes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
