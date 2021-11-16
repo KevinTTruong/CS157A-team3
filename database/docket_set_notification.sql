@@ -16,28 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `month_goals`
+-- Table structure for table `set_notification`
 --
 
-DROP TABLE IF EXISTS `month_goals`;
+DROP TABLE IF EXISTS `set_notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `month_goals` (
-  `account_id` int NOT NULL,
-  `goal_id` int NOT NULL,
-  `month` date NOT NULL,
-  PRIMARY KEY (`account_id`,`goal_id`)
+CREATE TABLE `set_notification` (
+  `task_id` int NOT NULL,
+  `notification_id` int NOT NULL,
+  PRIMARY KEY (`task_id`,`notification_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `month_goals`
+-- Dumping data for table `set_notification`
 --
 
-LOCK TABLES `month_goals` WRITE;
-/*!40000 ALTER TABLE `month_goals` DISABLE KEYS */;
-INSERT INTO `month_goals` VALUES (1,1,'2021-10-01'),(3,22,'2021-11-01'),(5,8,'2021-11-01'),(6,9,'2021-08-01'),(7,27,'2021-09-01'),(8,11,'2021-08-01'),(9,29,'2021-09-01'),(10,30,'2021-10-01'),(11,34,'2021-09-01'),(12,38,'2021-10-01'),(13,45,'2021-10-01'),(14,46,'2021-11-01'),(14,47,'2021-11-01'),(15,48,'2021-11-01'),(15,49,'2021-11-01');
-/*!40000 ALTER TABLE `month_goals` ENABLE KEYS */;
+LOCK TABLES `set_notification` WRITE;
+/*!40000 ALTER TABLE `set_notification` DISABLE KEYS */;
+INSERT INTO `set_notification` VALUES (1,1),(2,2),(3,3),(4,4),(5,5),(5,25),(6,6),(7,7),(8,8),(9,9),(10,10),(11,11),(12,12),(12,24),(13,13),(14,14),(15,15),(16,16),(17,17),(18,18),(19,19),(20,20),(21,21),(22,22),(22,23);
+/*!40000 ALTER TABLE `set_notification` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-02 16:02:34
+-- Dump completed on 2021-11-16 12:21:11

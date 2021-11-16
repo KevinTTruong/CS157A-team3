@@ -23,13 +23,12 @@ DROP TABLE IF EXISTS `tasks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tasks` (
-  `account_id` int NOT NULL,
   `task_id` int NOT NULL,
   `title` varchar(100) DEFAULT 'Unnamed task',
   `description` text,
   `date` date NOT NULL,
   `time` time NOT NULL,
-  PRIMARY KEY (`account_id`,`task_id`)
+  PRIMARY KEY (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -39,7 +38,7 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (1,1,'Finish math hw','','2021-10-24','23:59:00'),(1,2,'Study bio notes','chapters 3-5, 6','2021-11-02','20:00:00'),(1,3,'Finish section 1 of textbook','chapters 1-2 (pgs 10-47)','2021-11-01','20:00:00'),(2,4,'Finish lecture 2 notes','On Canvas!! under files','2021-09-06','23:59:00'),(2,5,'Finish lecture 3 notes','On Canvas!! under files','2021-09-06','23:59:00'),(3,6,'Download ubuntu','Directions in cs 149 canvas','2021-11-01','23:59:00'),(3,7,'Finish calc 3 homework','','2021-11-02','23:59:00'),(3,8,'Organize document sections','Title, table of contents, abstract, body x4, conclusion','2021-08-26','18:00:00'),(4,9,'Finish CS157A hw','','2021-09-13','23:59:00'),(4,10,'Finish CS157A report','Meeting with partners at 3:00 pm','2021-09-15','23:59:00'),(5,13,'Slides part 1','Use research in google drive','2021-10-26','23:59:00'),(5,14,'slides part 2','use info from textbook (pgs 276-289)','2021-10-27','23:59:00'),(7,11,'Learn A','https://www.guitarlessons.org/lessons/chords/a/','2021-09-28','23:59:00'),(7,12,'Learn A minor','https://www.guitarlessons.org/lessons/chords/a-minor/','2021-09-29','23:59:00'),(7,15,'Learn B','https://www.guitarlessons.org/lessons/chords/b/','2021-09-30','23:59:00'),(7,16,'Learn B minor','https://www.guitarlessons.org/lessons/chords/b-minor/','2021-10-01','23:59:00'),(8,17,'Finish project sections 1, 2','Upload to google drive when finished','2021-10-26','23:59:00'),(8,18,'Finish CS108 hw','talk to partner about report','2021-11-05','23:59:00'),(9,19,'BIO PAPER SOURCES 1 AND 2','ADD TO BIBLIOGRAPHY --> UPLOAD TO DRIVE','2021-08-20','23:59:00'),(10,20,'Apply to apple','SWE resume','2021-10-11','23:59:00'),(10,21,'Apply to linkedin','SWE resume','2021-10-13','23:59:00'),(10,22,'Apply to adobe','SWE intern resume','2021-10-15','23:59:00');
+INSERT INTO `tasks` VALUES (1,'Finish math hw','','2021-10-24','23:59:00'),(2,'Study bio notes','chapters 3-5, 6','2021-11-02','20:00:00'),(3,'Finish section 1 of textbook','chapters 1-2 (pgs 10-47)','2021-11-01','20:00:00'),(4,'Finish lecture 2 notes','On Canvas!! under files','2021-09-06','23:59:00'),(5,'Finish lecture 3 notes','On Canvas!! under files','2021-09-06','23:59:00'),(6,'Download ubuntu','Directions in cs 149 canvas','2021-11-01','23:59:00'),(7,'Finish calc 3 homework','','2021-11-02','23:59:00'),(8,'Organize document sections','Title, table of contents, abstract, body x4, conclusion','2021-08-26','18:00:00'),(9,'Finish CS157A hw','','2021-09-13','23:59:00'),(10,'Finish CS157A report','Meeting with partners at 3:00 pm','2021-09-15','23:59:00'),(11,'Learn A','https://www.guitarlessons.org/lessons/chords/a/','2021-09-28','23:59:00'),(12,'Learn A minor','https://www.guitarlessons.org/lessons/chords/a-minor/','2021-09-29','23:59:00'),(13,'Slides part 1','Use research in google drive','2021-10-26','23:59:00'),(14,'slides part 2','use info from textbook (pgs 276-289)','2021-10-27','23:59:00'),(15,'Learn B','https://www.guitarlessons.org/lessons/chords/b/','2021-09-30','23:59:00'),(16,'Learn B minor','https://www.guitarlessons.org/lessons/chords/b-minor/','2021-10-01','23:59:00'),(17,'Finish project sections 1, 2','Upload to google drive when finished','2021-10-26','23:59:00'),(18,'Finish CS108 hw','talk to partner about report','2021-11-05','23:59:00'),(19,'BIO PAPER SOURCES 1 AND 2','ADD TO BIBLIOGRAPHY --> UPLOAD TO DRIVE','2021-08-20','23:59:00'),(20,'Apply to apple','SWE resume','2021-10-11','23:59:00'),(21,'Apply to linkedin','SWE resume','2021-10-13','23:59:00'),(22,'Apply to adobe','SWE intern resume','2021-10-15','23:59:00');
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-02 16:02:31
+-- Dump completed on 2021-11-16 12:21:11

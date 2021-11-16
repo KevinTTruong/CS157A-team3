@@ -23,10 +23,9 @@ DROP TABLE IF EXISTS `tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tag` (
-  `account_id` int NOT NULL,
-  `task_id` int NOT NULL,
+  `tag_id` int NOT NULL,
   `label` varchar(45) NOT NULL,
-  `tag_id` int NOT NULL
+  PRIMARY KEY (`tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -36,7 +35,7 @@ CREATE TABLE `tag` (
 
 LOCK TABLES `tag` WRITE;
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
-INSERT INTO `tag` VALUES (1,1,'Completed',1),(1,2,'Active',2),(1,3,'Active',2),(2,4,'Completed',3),(2,5,'Completed',3),(2,4,'Notes',4),(2,5,'Notes',4),(3,6,'Active',5),(3,7,'Active',5),(3,7,'Homework',6),(3,8,'Completed',7),(4,9,'Completed',8),(4,9,'Homework',9),(4,10,'Completed',8),(7,11,'Completed',11),(7,12,'Completed',11),(7,11,'Guitar',12),(7,12,'Guitar',12),(5,13,'Completed',10),(5,14,'Completed',10),(7,15,'Completed',11),(7,16,'Completed',11),(7,15,'Guitar',12),(7,16,'Guitar',12),(8,17,'Completed',13),(8,18,'Completed',13),(9,19,'Completed',14),(9,19,'Important',15),(10,20,'Completed',16),(10,21,'Completed',16),(10,22,'Completed',16);
+INSERT INTO `tag` VALUES (1,'Completed'),(2,'Active'),(3,'Active'),(4,'Completed'),(5,'Completed'),(6,'Notes'),(7,'Notes'),(8,'Active'),(9,'Active'),(10,'Homework'),(11,'Completed'),(12,'Completed'),(13,'Homework'),(14,'Completed'),(15,'Completed'),(16,'Completed'),(17,'Guitar'),(18,'Guitar'),(19,'Completed'),(20,'Completed'),(21,'Completed'),(22,'Completed'),(23,'Guitar'),(24,'Guitar'),(25,'Completed'),(26,'Completed'),(27,'Completed'),(28,'Important'),(29,'Completed'),(30,'Completed'),(31,'Completed');
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-02 16:02:33
+-- Dump completed on 2021-11-16 12:21:11

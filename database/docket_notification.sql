@@ -23,13 +23,11 @@ DROP TABLE IF EXISTS `notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notification` (
-  `account_id` int NOT NULL,
-  `task_id` int NOT NULL,
+  `notification_id` int NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
   `type` varchar(5) NOT NULL,
-  `notification_id` int NOT NULL,
-  PRIMARY KEY (`task_id`,`account_id`,`notification_id`)
+  PRIMARY KEY (`notification_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -39,7 +37,7 @@ CREATE TABLE `notification` (
 
 LOCK TABLES `notification` WRITE;
 /*!40000 ALTER TABLE `notification` DISABLE KEYS */;
-INSERT INTO `notification` VALUES (1,1,'2021-10-24','20:00:00','text',1),(1,2,'2021-11-02','17:00:00','text',2),(1,3,'2021-11-01','18:30:00','text',3),(2,4,'2021-09-06','13:00:00','text',4),(2,5,'2021-09-06','17:00:00','text',5),(3,6,'2021-11-01','20:00:00','text',6),(3,7,'2021-11-02','22:00:00','text',7),(3,8,'2021-08-26','17:00:00','text',8),(4,9,'2021-09-13','23:59:00','text',9),(4,10,'2021-09-15','15:00:00','text',10),(7,11,'2021-09-28','20:00:00','email',11),(7,12,'2021-09-29','20:00:00','email',12),(5,13,'2021-10-26','19:00:00','text',13),(5,14,'2021-10-27','19:00:00','text',14),(7,15,'2021-09-30','20:00:00','email',15),(7,16,'2021-10-01','20:00:00','email',16),(8,17,'2021-10-26','22:00:00','text',17),(8,18,'2021-11-05','13:00:00','text',18),(9,19,'2021-08-20','21:00:00','email',19),(10,20,'2021-10-11','15:00:00','email',20),(10,21,'2021-10-13','15:00:00','email',21),(10,22,'2021-10-15','15:00:00','email',22);
+INSERT INTO `notification` VALUES (1,'2021-10-24','20:00:00','text'),(2,'2021-11-02','17:00:00','text'),(3,'2021-11-01','18:30:00','text'),(4,'2021-09-06','13:00:00','text'),(5,'2021-09-06','17:00:00','text'),(6,'2021-11-01','20:00:00','text'),(7,'2021-11-02','22:00:00','text'),(8,'2021-08-26','17:00:00','text'),(9,'2021-09-13','23:59:00','text'),(10,'2021-09-15','15:00:00','text'),(11,'2021-09-28','20:00:00','email'),(12,'2021-09-29','20:00:00','email'),(13,'2021-10-26','19:00:00','text'),(14,'2021-10-27','19:00:00','text'),(15,'2021-09-30','20:00:00','email'),(16,'2021-10-01','20:00:00','email'),(17,'2021-10-26','22:00:00','text'),(18,'2021-11-05','13:00:00','text'),(19,'2021-08-20','21:00:00','email'),(20,'2021-10-11','15:00:00','email'),(21,'2021-10-13','15:00:00','email'),(22,'2021-10-15','15:00:00','email'),(23,'2021-10-15','15:00:00','text'),(24,'2021-09-29','20:00:00','text'),(25,'2021-09-06','17:00:00','email');
 /*!40000 ALTER TABLE `notification` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-02 16:02:32
+-- Dump completed on 2021-11-16 12:21:11

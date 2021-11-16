@@ -16,28 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `week_notes`
+-- Table structure for table `create_task`
 --
 
-DROP TABLE IF EXISTS `week_notes`;
+DROP TABLE IF EXISTS `create_task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `week_notes` (
+CREATE TABLE `create_task` (
   `account_id` int NOT NULL,
-  `note_id` int NOT NULL,
-  `week` date NOT NULL,
-  PRIMARY KEY (`account_id`,`note_id`)
+  `task_id` int NOT NULL,
+  PRIMARY KEY (`account_id`,`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `week_notes`
+-- Dumping data for table `create_task`
 --
 
-LOCK TABLES `week_notes` WRITE;
-/*!40000 ALTER TABLE `week_notes` DISABLE KEYS */;
-INSERT INTO `week_notes` VALUES (1,2,'2021-10-11'),(2,12,'2021-09-06'),(5,5,'2021-11-01'),(5,17,'2021-10-25'),(8,8,'2021-10-18'),(9,9,'2021-09-13'),(10,11,'2021-10-11'),(10,21,'2021-10-11'),(11,28,'2021-10-25'),(11,29,'2021-09-27'),(12,33,'2021-08-09'),(12,34,'2021-08-16'),(13,38,'2021-10-11'),(14,41,'2021-10-18'),(15,44,'2021-10-11');
-/*!40000 ALTER TABLE `week_notes` ENABLE KEYS */;
+LOCK TABLES `create_task` WRITE;
+/*!40000 ALTER TABLE `create_task` DISABLE KEYS */;
+INSERT INTO `create_task` VALUES (1,1),(1,2),(1,3),(2,4),(2,5),(3,6),(3,7),(3,8),(4,9),(4,10),(5,13),(5,14),(7,11),(7,12),(7,15),(7,16),(8,17),(8,18),(9,19),(10,20),(10,21),(10,22);
+/*!40000 ALTER TABLE `create_task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-02 16:02:33
+-- Dump completed on 2021-11-16 12:21:10

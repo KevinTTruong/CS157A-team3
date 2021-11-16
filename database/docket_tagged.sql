@@ -16,28 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `day_notes`
+-- Table structure for table `tagged`
 --
 
-DROP TABLE IF EXISTS `day_notes`;
+DROP TABLE IF EXISTS `tagged`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `day_notes` (
-  `account_id` int NOT NULL,
-  `note_id` int NOT NULL,
-  `date` date NOT NULL,
-  PRIMARY KEY (`account_id`,`note_id`)
+CREATE TABLE `tagged` (
+  `task_id` int NOT NULL,
+  `tag_id` int NOT NULL,
+  PRIMARY KEY (`task_id`,`tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `day_notes`
+-- Dumping data for table `tagged`
 --
 
-LOCK TABLES `day_notes` WRITE;
-/*!40000 ALTER TABLE `day_notes` DISABLE KEYS */;
-INSERT INTO `day_notes` VALUES (3,4,'2021-10-31'),(3,13,'2021-10-31'),(3,14,'2021-10-23'),(4,15,'2021-11-01'),(4,16,'2021-09-15'),(6,18,'2021-10-11'),(7,7,'2021-10-06'),(7,19,'2021-10-01'),(8,20,'2021-10-26'),(9,10,'2021-08-28'),(11,27,'2021-08-04'),(12,32,'2021-08-04'),(13,37,'2021-09-27'),(14,40,'2021-10-20'),(15,43,'2021-11-02');
-/*!40000 ALTER TABLE `day_notes` ENABLE KEYS */;
+LOCK TABLES `tagged` WRITE;
+/*!40000 ALTER TABLE `tagged` DISABLE KEYS */;
+INSERT INTO `tagged` VALUES (1,1),(2,2),(3,3),(4,4),(4,5),(5,6),(5,7),(6,8),(7,9),(7,10),(8,11),(9,12),(9,13),(10,14),(11,15),(11,16),(12,17),(12,18),(13,19),(14,20),(15,21),(15,22),(16,23),(16,24),(17,25),(18,26),(19,27),(19,28),(20,29),(21,30),(22,31);
+/*!40000 ALTER TABLE `tagged` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-02 16:02:32
+-- Dump completed on 2021-11-16 12:21:11
