@@ -3,80 +3,89 @@
 <html>
 <div class="wrapper">
 <meta charset = "UTF-8">
-<link href = "main.css" rel="stylesheet" type="text/css">
-    <main>
-      <div class="toolbar">
-        <div class="toggle">
-          <div class="toggle__option">week</div>
-          <div class="toggle__option toggle__option--selected">month</div>
-          <div class="toggle__option">year</div>
-        </div>
-        <div class="current-month">November 2021</div>
-        <div class="search-input">
-          <input type="text" value=" What are you looking for? ">
-          <i class="fa fa-search"></i>
-        </div>
-      </div>
-      <div class="button1">add event</div>
-      <div class="button2">remove event</div>
-
+<link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap" rel="stylesheet"> <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'>
+<link rel='stylesheet' href='https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css'>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css'><link rel="stylesheet" href="./main.css">
+    <body>
       <div class="calendar">
-        <div class="calendar__header">
-          <div>mon</div>
-          <div>tue</div>
-          <div>wed</div>
-          <div>thu</div>
-          <div>fri</div>
-          <div>sat</div>
-          <div>sun</div>
+        <div class="p-5">
+          <h2 class="mb-4">Docket</h2>
+          <div class="card">
+            <div class="card-body p-0">
+              <div id="calendar"></div>
+            </div>
+          </div>
+          
         </div>
-        <div class="calendar__week">
-          <div class="calendar__day day">1</div>
-          <div class="calendar__day day">2</div>
-          <div class="calendar__day day">3</div>
-          <div class="calendar__day day">4</div>
-          <div class="calendar__day day">5</div>
-          <div class="calendar__day day">6</div>
-          <div class="calendar__day day">7</div>
+        
+        <!-- calendar modal -->
+        <div id="modal-view-event" class="modal modal-top fade calendar-modal">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <h4 class="modal-title"><span class="event-icon"></span><span class="event-title"></span></h4>
+                  <div class="event-body"></div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
         </div>
-        <div class="calendar__week">
-          <div class="calendar__day day">8</div>
-          <div class="calendar__day day">9</div>
-          <div class="calendar__day day">10</div>
-          <div class="calendar__day day">11</div>
-          <div class="calendar__day day">12</div>
-          <div class="calendar__day day">13</div>
-          <div class="calendar__day day">14</div>        
+        
+        <div id="modal-view-event-add" class="modal modal-top fade calendar-modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <form id="add-event">
+                <div class="modal-body">
+                <h4>Add Event Detail</h4>        
+                  <div class="form-group">
+                    <label>Event name</label>
+                    <input type="text" class="form-control" name="ename">
+                  </div>
+                  <div class="form-group">
+                    <label>Event Date</label>
+                    <input type='text' class="datetimepicker form-control" name="edate">
+                  </div>        
+                  <div class="form-group">
+                    <label>Event Description</label>
+                    <textarea class="form-control" name="edesc"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Event Color</label>
+                    <select class="form-control" name="ecolor">
+                      <option value="fc-bg-default">fc-bg-default</option>
+                      <option value="fc-bg-blue">fc-bg-blue</option>
+                      <option value="fc-bg-lightgreen">fc-bg-lightgreen</option>
+                      <option value="fc-bg-pinkred">fc-bg-pinkred</option>
+                      <option value="fc-bg-deepskyblue">fc-bg-deepskyblue</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Event Icon</label>
+                    <select class="form-control" name="eicon">
+                      <option value="circle">circle</option>
+                      <option value="cog">cog</option>
+                      <option value="group">group</option>
+                      <option value="suitcase">suitcase</option>
+                      <option value="calendar">calendar</option>
+                    </select>
+                  </div>        
+              </div>
+                <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" >Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>        
+              </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <div class="calendar__week">
-          <div class="calendar__day day">15</div>
-          <div class="calendar__day day">16</div>
-          <div class="calendar__day day">17</div>
-          <div class="calendar__day day">18</div>
-          <div class="calendar__day day">19</div>
-          <div class="calendar__day day">20</div>
-          <div class="calendar__day day">21</div>    
-        </div>
-        <div class="calendar__week">
-          <div class="calendar__day day">22</div>
-          <div class="calendar__day day">23</div>
-          <div class="calendar__day day">24</div>
-          <div class="calendar__day day">25</div>
-          <div class="calendar__day day">26</div> 
-          <div class="calendar__day day">27</div> 
-          <div class="calendar__day day">28</div> 
-        </div>
-        <div class="calendar__week">
-          <div class="calendar__day day">29</div>
-          <div class="calendar__day day">30</div>
-          <div class="calendar__day day">1</div>
-          <div class="calendar__day day">2</div>
-          <div class="calendar__day day">3</div>
-          <div class="calendar__day day">4</div>
-          <div class="calendar__day day">5</div>
-        </div>
+        
       </div>
-    </main>
+    </body>
+
+
     <sidebar>
       <div class="avatar">
         <div class="avatar__img">
@@ -98,16 +107,21 @@
           <span class="menu__text">calendar</span>
         </a>
         <a class="menu__item" href="#">
-          <i class="menu__icon fa fa-trophy"></i>
-          <span class="menu__text">achivements</span>
-        </a>
-        <a class="menu__item" href="#">
           <i class="menu__icon fa fa-sliders"></i>
           <span class="menu__text">settings</span>
         </a>
       </nav>
       <div class="copyright">Docket &copy; 2021</div>
     </sidebar>
+
+     <!-- partial -->
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js'></script>
+     <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'></script>
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js'></script>
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js'></script>
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script><script  src="./script.js"></script>
   </div>
   </html>
 	
@@ -136,3 +150,4 @@
     %>
   </body>
 </html>
+
