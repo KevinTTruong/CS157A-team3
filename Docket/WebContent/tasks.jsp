@@ -58,7 +58,6 @@
                       <option value="fc-bg-default">fc-bg-default</option>
                       <option value="fc-bg-blue">fc-bg-blue</option>
                       <option value="fc-bg-lightgreen">fc-bg-lightgreen</option>
-                      <option value="fc-bg-pinkred">fc-bg-pinkred</option>
                       <option value="fc-bg-deepskyblue">fc-bg-deepskyblue</option>
                     </select>
                   </div>
@@ -68,8 +67,6 @@
                       <option value="circle">circle</option>
                       <option value="cog">cog</option>
                       <option value="group">group</option>
-                      <option value="suitcase">suitcase</option>
-                      <option value="calendar">calendar</option>
                     </select>
                   </div>        
               </div>
