@@ -38,6 +38,7 @@
             </div>
         </div>
         
+        <!-- Add note -->
         <div id="modal-view-event-add" class="modal modal-top fade calendar-modal">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -47,7 +48,7 @@
                   <input type="hidden" name="account_id" value=<%=account_id%> />	<!-- Save account_id on submit -->     
                   <div class="form-group">
                     <label>Notes</label>
-                    <input type="text" class="form-control" name="note">
+                    <textarea class="form-control" name="note" style="height:200px;"></textarea>
                   </div>
                   <div class="form-group">
                     <label>Start Date</label>
@@ -73,7 +74,6 @@
 				/*
 				TODO:
 					Pop-up message if invalid date error/Success
-					Larger text box for Notes in form
 					Display Notes on Calender
 					Create a new Add Note button instead of clicking on calender
 					View Note UI + Remove UI/(Modify)
@@ -84,6 +84,7 @@
 		  		String noteEndDate = request.getParameter("noteenddate");
 		  		if(note!=null && noteStartDate!=null && noteEndDate!=null){
 		  			addNote(out, account_id, note, noteStartDate, noteEndDate);
+		  			//removeNote(out, account_id, note, noteStartDate, noteEndDate);
 		  			//TODO: pop up modal-view-note-add with prefilled values + message saying error if returned false
 		  			//TODO: pop up if success
 		  		}
