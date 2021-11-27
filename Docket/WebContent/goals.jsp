@@ -38,25 +38,25 @@
             </div>
         </div>
         
-        <!-- Add note -->
+        <!-- Add goal -->
         <div id="modal-view-event-add" class="modal modal-top fade calendar-modal">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-              <form id="add-note">
+              <form id="add-goal">
                 <div class="modal-body">
-                <h4>Add Note</h4>
+                <h4>Add Goal</h4>
                   <input type="hidden" name="account_id" value=<%=account_id%> />	<!-- Save account_id on submit -->     
                   <div class="form-group">
-                    <label>Notes</label>
-                    <textarea class="form-control" name="note" style="height:200px;"></textarea>
+                    <label>Goal</label>
+                    <textarea class="form-control" name="goal" style="height:100px;"></textarea>
                   </div>
                   <div class="form-group">
                     <label>Start Date</label>
-                    <input type='date' class="form-control" name="notestartdate">
+                    <input type='date' class="form-control" name="goalstartdate">
                   </div>        
                   <div class="form-group">
                     <label>End Date</label>
-                    <input type='date' class="form-control" name="noteenddate">
+                    <input type='date' class="form-control" name="goalenddate">
                   </div>
               </div>
                 <div class="modal-footer">
@@ -74,27 +74,28 @@
 				/*
 				TODO:
 					Pop-up message if invalid date error/Success
-					Display Notes on Calender
-					Create a new Add Note button instead of clicking on calender
-					View Note UI + Remove UI/(Modify)
+					Display Goals on Calender
+					Create a new Add Goal button instead of clicking on calender
+					View Goal UI + Remove UI/(Modify)
+					(change parameters to removeGoal if needed)
 				*/
-		  		String note = request.getParameter("note");
-		  		String noteStartDate = request.getParameter("notestartdate");
-		  		String noteEndDate = request.getParameter("noteenddate");
-		  		if(note!=null && noteStartDate!=null && noteEndDate!=null){
+		  		String goal = request.getParameter("goal");
+		  		String goalStartDate = request.getParameter("goalstartdate");
+		  		String goalEndDate = request.getParameter("goalenddate");
+		  		if(goal!=null && goalStartDate!=null && goalEndDate!=null){
 		  			try{
-			  			addNote(account_id, note, noteStartDate, noteEndDate);
+			  			addGoal(account_id, goal, goalStartDate, goalEndDate);
 			  		} catch (Exception e) {
 			  			//MysqlDataTruncation = incorrect date format
 				  		out.println(e);
 				  	} 
 		  			//
-		  			//TODO: pop up modal-view-note-add with prefilled values + message saying error if catched
+		  			//TODO: pop up modal-view-goal-add with prefilled values + message saying error if catched
 		  			//TODO: pop up if success
 		  			/*
 		  		else if(//update-vars are not null){
 		  				try{
-			  			updateNote(//note_id, //note, //noteStartDate, //noteEndDate);
+			  			updateGoal(//goal_id, //goal, //goalStartDate, //goalEndDate);
 			  			} catch (Exception e) {
 			  				//MysqlDataTruncation = incorrect date format
 					  		out.println(e);
@@ -102,7 +103,7 @@
 		  		}
 		  		else if(toggle-remove not null){
 		  			try{
-		  				removeNote(account_id, //note_id);
+		  				removeGoal(account_id, //goal_id);
 		  			} catch (Exception e) {
 				  		out.println(e);
 				  	} 
@@ -158,42 +159,42 @@
 	String user = "docket";
 	String pass = "!d0ckeT2t3";
 	String db = "docket";
-	String table = "notes";
-	String relation = "take_notes";
+	String table = "goals";
+	String relation = "have_goals";
 	
-  	public void addNote(String account_id, String note, String start, String end) throws Exception{
+  	public void addGoal(String account_id, String goal, String start, String end) throws Exception{
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
 		
-		//Get the max id and iterate to create the new note_id
-		ResultSet maxId = stmt.executeQuery("select max(note_id) from "+table);
+		//Get the max id and iterate to create the new goal_id
+		ResultSet maxId = stmt.executeQuery("select max(goal_id) from "+table);
 		maxId.next();
-		int note_id = maxId.getInt(1)+1;
+		int goal_id = maxId.getInt(1)+1;
 		maxId.close();
 		
-  		stmt.executeUpdate("insert into "+db+"."+table+" (note_id, notes, start_date, end_date) VALUES (\""+note_id+"\", \""+note+"\", \""+start+"\", \""+end+"\")");
-		stmt.executeUpdate("insert into "+db+"."+relation+" (account_id, note_id) values ("+account_id+", "+note_id+")");
+  		stmt.executeUpdate("insert into "+db+"."+table+" (goal_id, goal, start_date, end_date) VALUES (\""+goal_id+"\", \""+goal+"\", \""+start+"\", \""+end+"\")");
+		stmt.executeUpdate("insert into "+db+"."+relation+" (account_id, goal_id) values ("+account_id+", "+goal_id+")");
   		
 		stmt.close();
 		con.close();
   	}	
   
-  	public void removeNote(String account_id, String note_id) throws Exception{
+  	public void removeGoal(String account_id, String goal_id) throws Exception{
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
 		
-  		stmt.executeUpdate("delete from "+db+"."+table+" where (note_id=\""+note_id+"\")");
-  		stmt.executeUpdate("delete from "+db+"."+relation+" where (account_id="+account_id+") and (note_id="+note_id+")");
+  		stmt.executeUpdate("delete from "+db+"."+table+" where (goal_id=\""+goal_id+"\")");
+  		stmt.executeUpdate("delete from "+db+"."+relation+" where (account_id="+account_id+") and (goal_id="+goal_id+")");
   		
 		stmt.close();
 		con.close();
   	}
   	
-  	public void updateNote(String note_id, String note, String start, String end) throws Exception{
+  	public void updateGoal(String goal_id, String goal, String start, String end) throws Exception{
   		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
 		
-  		stmt.executeUpdate("update "+db+"."+table+" set notes=\""+note+"\", start_date=\""+start+"\", end_date=\""+end+"\" where note_id=\""+note_id+"\"");
+  		stmt.executeUpdate("update "+db+"."+table+" set goal=\""+goal+"\", start_date=\""+start+"\", end_date=\""+end+"\" where goal_id=\""+goal_id+"\"");
   		
 		stmt.close();
 		con.close();
