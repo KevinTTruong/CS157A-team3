@@ -34,20 +34,20 @@ jQuery(document).ready(function(){
               },
               //event sources 
               //getAll from db
-              events: function(){
-                    fetch('http://localhost:3000/getAll')
-                    .then(response => response.json());                    
-              },
-            // events: [
-            //     {
-            //         title: 'Team Meeting',
-            //         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-            //         start: '2021-11-10T13:00:00',
-            //         end: '2021-11-10T16:00:00',
-            //         className: 'fc-bg-pinkred',
-            //         icon : "group",
-            //         allDay: false
-            //     }],
+            //   events: function(){
+            //         fetch('http://localhost:3000/getAll')
+            //         .then(response => response.json());                    
+            //   },
+            events: [
+                {
+                    title: 'Team Meeting',
+                    description: 'Discussion',
+                    start: '2021-11-10T13:00:00',
+                    end: '2021-11-10T16:00:00',
+                    className: 'fc-bg-blue',
+                    icon : "group",
+                    allDay: false
+                }],
               eventRender: function(event, element) {
                   if(event.icon){
                       element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i>");
