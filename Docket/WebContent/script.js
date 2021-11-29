@@ -41,13 +41,22 @@ jQuery(document).ready(function(){
             events: [
                 {
                     title: 'Team Meeting',
-                    description: 'Discussion',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
                     start: '2021-11-10T13:00:00',
                     end: '2021-11-10T16:00:00',
-                    className: 'fc-bg-blue',
+                    className: 'fc-bg-pinkred',
                     icon : "group",
                     allDay: false
-                }],
+                },
+                {
+                    title: 'Team Meeting 2',
+                    description: 'Discussion',
+                    start: '2021-11-15T13:00:00',
+                    end: '2021-11-15T16:00:00',
+                    className: 'fc-bg-blue',
+                    icon : "group",
+                }
+            ],
               eventRender: function(event, element) {
                   if(event.icon){
                       element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i>");
