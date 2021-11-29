@@ -108,7 +108,6 @@
           <span class="menu__text">settings</span>
         </a>
       </nav>
-      <div class="copyright">Docket &copy; 2021</div>
     </sidebar>
 
      <!-- partial -->
