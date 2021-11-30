@@ -1,12 +1,35 @@
 <%@ page import="java.sql.*"%>
-
-<html>
-<div class="wrapper">
 <meta charset = "UTF-8">
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet"> 
 <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap" rel="stylesheet"> <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'>
 <link rel='stylesheet' href='https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css'>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css'><link rel="stylesheet" href="./main.css">
+
+<style>
+	.modal-message {
+	  display: none;
+	  position: fixed;
+	  z-index: 1;
+	  left: 0;
+	  top: 0;
+	  width: 100%;
+	  height: 100%;
+	  background-color: rgba(0,0,0,0.4);
+	}
+	
+	/* Modal Content */
+	.modal-message-content {
+	  background-color: #fefefe;
+	  margin: auto;
+	  padding: 100px;
+	  border: 1px solid #888;
+	  width: 80%;
+	}
+</style>
+
+<html>
+
+<div class="wrapper">
 <% 
 	Class.forName("com.mysql.cj.jdbc.Driver");
 	String account_id=request.getParameter("account_id");	//If account_id not retrieved, will crash
@@ -20,7 +43,6 @@
               <div id="calendar"></div>
             </div>
           </div>
-          
         </div>
         
         <!-- calendar modal -->
@@ -32,6 +54,7 @@
                   <div class="event-body"></div>
                 </div>
                 <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" >Remove</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
               </div>
@@ -68,52 +91,62 @@
           </div>
         </div>
         
-      </div>
-      <div>
-		  <% 
-				/*
-				TODO:
-					Pop-up message if invalid date error/Success
-					Display Goals on Calender
-					Create a new Add Goal button instead of clicking on calender
-					View Goal UI + Remove UI/(Modify)
-					(change parameters to removeGoal if needed)
-				*/
-		  		String goal = request.getParameter("goal");
-		  		String goalStartDate = request.getParameter("goalstartdate");
-		  		String goalEndDate = request.getParameter("goalenddate");
-		  		if(goal!=null && goalStartDate!=null && goalEndDate!=null){
-		  			try{
-			  			addGoal(account_id, goal, goalStartDate, goalEndDate);
-			  		} catch (Exception e) {
-			  			//MysqlDataTruncation = incorrect date format
-				  		out.println(e);
-				  	} 
-		  			//
-		  			//TODO: pop up modal-view-goal-add with prefilled values + message saying error if catched
-		  			//TODO: pop up if success
-		  			/*
-		  		else if(//update-vars are not null){
-		  				try{
-			  			updateGoal(//goal_id, //goal, //goalStartDate, //goalEndDate);
-			  			} catch (Exception e) {
-			  				//MysqlDataTruncation = incorrect date format
-					  		out.println(e);
-					  	} 
-		  		}
-		  		else if(toggle-remove not null){
-		  			try{
-		  				removeGoal(account_id, //goal_id);
-		  			} catch (Exception e) {
-				  		out.println(e);
-				  	} 
-		  		}
-		  			*/
-		  		}
-		  		
+        <% 
+			/*
+			TODO:
+				Display Goals on Calender
+				Create a new Add Goal button instead of clicking on calender
+				View Goal UI + Remove UI/(Modify)
+			*/
+	  		String goal = request.getParameter("goal");
+	  		String goalStartDate = request.getParameter("goalstartdate");
+	  		String goalEndDate = request.getParameter("goalenddate");
+	  		if(goal!=null && goalStartDate!=null && goalEndDate!=null){
+	  			try{
+		  			addGoal(account_id, goal, goalStartDate, goalEndDate);
+		  			displayMessage(out, "Goal added!");
+		  		} catch (Exception e) {
+		  			//MysqlDataTruncation = incorrect date format
+		  			displayMessage(out, "Error: "+e.getMessage());
+			  	}
+	  			/*
+	  		else if(//update-vars are not null){
+  				try{
+	  				updateGoal(//goal_id, //goal, //goalStartDate, //goalEndDate);
+ 					displayMessage(out, "Goal updated!");
+	  			} catch (Exception e) {
+	  				displayMessage(out, "Error: "+e.getMessage());
+			  	} 
+	  		}
+	  		else if(toggle-remove not null){
+	  			try{
+	  				removeGoal(account_id, //goal_id);
+	  				displayMessage(out, "Goal removed!");
+	  			} catch (Exception e) {
+	  				displayMessage(out, "Error: "+e.getMessage());
+			  	} 
+	  		}
+	  			*/
+	  		}
+	  		
 
-		    %>
-	  </div>
+	    %>
+	    
+	    <script>
+			// Get the modal
+			var modal_message = document.getElementById("message");
+			
+			modal_message.style.display = "block";
+			
+			// When the user clicks anywhere outside of the modal, close it
+			window.onclick = function(event) {
+			  if (event.target == modal_message) {
+			    modal_message.style.display = "none";
+			  }
+			}
+		</script>
+        
+      </div>
     </body>
 
 
@@ -152,10 +185,15 @@
      <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js'></script>
      <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
      <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js'></script>
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script><script  src="./script.js"></script>
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script>
+     <script src="./script.js"></script>
+     <script>
+		$('#calendar').fullCalendar('removeEvents');
+		document.write("hi");
+	 </script>
   </div>
-  </html>
-  <%!
+</html>
+<%!
 	String user = "docket";
 	String pass = "!d0ckeT2t3";
 	String db = "docket";
@@ -200,7 +238,12 @@
 		con.close();
   	}
   	
-  %>
-  </body>
-</html>
+  	public void displayMessage(javax.servlet.jsp.JspWriter out, String message) throws Exception{
+  		out.write("<div id=\"message\" class=\"modal-message\">");
+  		out.write("<div class=\"modal-message-content\">");
+  		out.write(message);
+  		out.write("</div>");
+  		out.write("</div>");
+  	}
+%>
 

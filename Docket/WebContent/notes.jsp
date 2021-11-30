@@ -1,18 +1,42 @@
 <%@ page import="java.sql.*"%>
-
-<html>
-<div class="wrapper">
 <meta charset = "UTF-8">
 <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700&display=swap" rel="stylesheet"> 
 <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap" rel="stylesheet"> <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'>
 <link rel='stylesheet' href='https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css'>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css'><link rel="stylesheet" href="./main.css">
-<% 
-	Class.forName("com.mysql.cj.jdbc.Driver");
-	String account_id=request.getParameter("account_id");	//If account_id not retrieved, will crash
-%>
+
+<style>
+	.modal-message {
+	  display: none;
+	  position: fixed;
+	  z-index: 1;
+	  left: 0;
+	  top: 0;
+	  width: 100%;
+	  height: 100%;
+	  background-color: rgba(0,0,0,0.4);
+	}
+	
+	/* Modal Content */
+	.modal-message-content {
+	  background-color: #fefefe;
+	  margin: auto;
+	  padding: 100px;
+	  border: 1px solid #888;
+	  width: 80%;
+	}
+</style>
+
+<html>
+<div class="wrapper">
+	<% 
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		String account_id=request.getParameter("account_id");	//If account_id not retrieved, will crash
+	%>
+	
     <body>
-      <div class="calendar">
+		
+	  <div class="calendar">
         <div class="p-5">
           <h2 class="mb-4">Docket</h2>
           <div class="card">
@@ -20,18 +44,20 @@
               <div id="calendar"></div>
             </div>
           </div>
-          
         </div>
         
-        <!-- calendar modal -->
+        <!-- View note -->
         <div id="modal-view-event" class="modal modal-top fade calendar-modal">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-body">
-                  <h4 class="modal-title"><span class="event-icon"></span><span class="event-title"></span></h4>
-                  <div class="event-body"></div>
+                  <h4 class="modal-title">
+                    <span class="event-icon"></span>
+                    <span class="event-title"></span>
+                  </h4>
                 </div>
                 <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary" >Remove</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
               </div>
@@ -51,11 +77,11 @@
                     <textarea class="form-control" name="note" style="height:200px;"></textarea>
                   </div>
                   <div class="form-group">
-                    <label>Start Date</label>
+                    <label>Start Date (yyyy-mm-dd)</label>
                     <input type='date' class="form-control" name="notestartdate">
                   </div>        
                   <div class="form-group">
-                    <label>End Date</label>
+                    <label>End Date (yyyy-mm-dd)</label>
                     <input type='date' class="form-control" name="noteenddate">
                   </div>
               </div>
@@ -68,54 +94,66 @@
           </div>
         </div>
         
+        <% 
+			/*
+			TODO:
+				Change start/end to datetime
+				View Note UI + Remove UI/(Modify)
+				(Pop-up message if invalid date error/Success)
+			*/
+	  		String note = request.getParameter("note");
+	  		String noteStartDate = request.getParameter("notestartdate");
+	  		String noteEndDate = request.getParameter("noteenddate");
+	  		
+	  		if(note!=null && noteStartDate!=null && noteEndDate!=null){
+	  			try{
+		  			addNote(account_id, note, noteStartDate, noteEndDate);
+		  			displayMessage(out, "Note added!");
+		  		} catch (Exception e) {
+		  			//MysqlDataTruncation = incorrect date format
+			  		displayMessage(out, "Error: "+e.getMessage());
+			  	} 
+	  			/*
+	  		else if(//update-vars are not null){
+  				try{
+	  				updateNote(//note_id, //note, //noteStartDate, //noteEndDate);
+					displayMessage(out, "Note updated!");
+	  			} catch (Exception e) {
+	  				displayMessage(out, "Error: "+e.getMessage());
+			  	} 
+	  		}
+	  		else if(toggle-remove not null){
+	  			try{
+	  				removeNote(account_id, //note_id);
+	  						displayMessage(out, "Note removed!");
+	  			} catch (Exception e) {
+	  				displayMessage(out, "Error: "+e.getMessage());
+			  	} 
+	  		}
+	  			*/
+	  		}
+	  		
+			
+	    %>
+	    
+	    <!-- Success/Error message -->
+	    <script>
+			// Get the modal
+			var modal_message = document.getElementById("message");
+			
+			modal_message.style.display = "block";
+			
+			// When the user clicks anywhere outside of the modal, close it
+			window.onclick = function(event) {
+			  if (event.target == modal_message) {
+			    modal_message.style.display = "none";
+			  }
+			}
+		</script>
+	    
       </div>
-      <div>
-		  <% 
-				/*
-				TODO:
-					Pop-up message if invalid date error/Success
-					Display Notes on Calender
-					Create a new Add Note button instead of clicking on calender
-					View Note UI + Remove UI/(Modify)
-				*/
-		  		String note = request.getParameter("note");
-		  		String noteStartDate = request.getParameter("notestartdate");
-		  		String noteEndDate = request.getParameter("noteenddate");
-		  		if(note!=null && noteStartDate!=null && noteEndDate!=null){
-		  			try{
-			  			addNote(account_id, note, noteStartDate, noteEndDate);
-			  		} catch (Exception e) {
-			  			//MysqlDataTruncation = incorrect date format
-				  		out.println(e);
-				  	} 
-		  			//
-		  			//TODO: pop up modal-view-note-add with prefilled values + message saying error if catched
-		  			//TODO: pop up if success
-		  			/*
-		  		else if(//update-vars are not null){
-		  				try{
-			  			updateNote(//note_id, //note, //noteStartDate, //noteEndDate);
-			  			} catch (Exception e) {
-			  				//MysqlDataTruncation = incorrect date format
-					  		out.println(e);
-					  	} 
-		  		}
-		  		else if(toggle-remove not null){
-		  			try{
-		  				removeNote(account_id, //note_id);
-		  			} catch (Exception e) {
-				  		out.println(e);
-				  	} 
-		  		}
-		  			*/
-		  		}
-		  		
-
-		    %>
-	  </div>
     </body>
-
-
+    
     <sidebar>
       <div class="avatar">
         <div class="avatar__img">
@@ -144,17 +182,24 @@
       <div class="copyright">Docket &copy; 2021</div>
     </sidebar>
 
-     <!-- partial -->
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js'></script>
-     <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'></script>
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js'></script>
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js'></script>
-     <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script><script  src="./script.js"></script>
+    <!-- partial -->
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js'></script>
+	<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script>
+	
+	<script src="script.js"></script>
+	<% renderEvents(out, account_id); %>
+	<script>
+		
+	</script>
+
   </div>
-  </html>
-  <%!
+</html>
+<%!
 	String user = "docket";
 	String pass = "!d0ckeT2t3";
 	String db = "docket";
@@ -177,8 +222,10 @@
 		stmt.close();
 		con.close();
   	}	
-  
+  	
   	public void removeNote(String account_id, String note_id) throws Exception{
+  		if(note_id==null) return;
+  		
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
 		
@@ -199,7 +246,38 @@
 		con.close();
   	}
   	
-  %>
-  </body>
-</html>
+  	public void displayMessage(javax.servlet.jsp.JspWriter out, String message) throws Exception{
+  		out.write("<div id=\"message\" class=\"modal-message\">");
+  		out.write("<div class=\"modal-message-content\">");
+  		out.write(message);
+  		out.write("</div>");
+  		out.write("</div>");
+  	}
+  	
+  	public void renderEvents(javax.servlet.jsp.JspWriter out, String account_id) throws Exception{
+  		//Range: current/given month
+  		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
+		Statement stmt = con.createStatement();
+		ResultSet allNotes = stmt.executeQuery("select * from "+db+"."+relation+" JOIN "+db+"."+table+" USING(note_id) WHERE account_id=\""+account_id+"\"");
+		
+		out.write("<script>");
+			out.write("$('#calendar').fullCalendar('removeEvents');");	//Refresh event list
+			out.write("var events=[];");		//Initialize list of events
+			
+			//Collect events from database and Add event to list
+			allNotes.next();	//Skip header
+			while(!allNotes.isAfterLast()){
+				out.write("events.push({id:"+allNotes.getInt(1)+", title:'"+allNotes.getString(3)+"', start:'"+allNotes.getString(4)+"T00:00:00', end:'"+allNotes.getString(5)+"T23:00:00', icon:'group'});");	
+				allNotes.next();
+			}
+			
+			out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
+		out.write("</script>");
+		
+		allNotes.close();
+	 	stmt.close();
+		con.close();
+  	}
+  	
+%>
 
