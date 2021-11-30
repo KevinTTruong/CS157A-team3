@@ -54,10 +54,12 @@
                   <h4 class="modal-title">
                     <span class="event-icon"></span>
                     <span class="event-title"></span>
+                    <span  id="event-id" class="event-id" style="display:none"></span>
                   </h4>
                 </div>
+        			<script></script>
                 <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary" >Remove</button>
+                  <button type="submit" class="btn btn-primary" onclick="window.location.assign(window.location.href+'&note_id='+jQuery('#event-id').text());">Remove</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
               </div>
@@ -97,13 +99,15 @@
         <% 
 			/*
 			TODO:
+				Render: invalid or unexpected token
 				Change start/end to datetime
-				View Note UI + Remove UI/(Modify)
-				(Pop-up message if invalid date error/Success)
+				View Note UI/Modify
+				Update to Goals
 			*/
 	  		String note = request.getParameter("note");
 	  		String noteStartDate = request.getParameter("notestartdate");
 	  		String noteEndDate = request.getParameter("noteenddate");
+	  		String note_id = request.getParameter("note_id");
 	  		
 	  		if(note!=null && noteStartDate!=null && noteEndDate!=null){
 	  			try{
@@ -113,24 +117,22 @@
 		  			//MysqlDataTruncation = incorrect date format
 			  		displayMessage(out, "Error: "+e.getMessage());
 			  	} 
-	  			/*
-	  		else if(//update-vars are not null){
+	  		/*
+	  		}else if(note_id!=null){
   				try{
 	  				updateNote(//note_id, //note, //noteStartDate, //noteEndDate);
 					displayMessage(out, "Note updated!");
 	  			} catch (Exception e) {
 	  				displayMessage(out, "Error: "+e.getMessage());
 			  	} 
-	  		}
-	  		else if(toggle-remove not null){
+  			*/
+	  		}else if(note_id!=null){
 	  			try{
-	  				removeNote(account_id, //note_id);
-	  						displayMessage(out, "Note removed!");
+	  				removeNote(account_id, note_id);
+	  				displayMessage(out, "Note removed!");
 	  			} catch (Exception e) {
 	  				displayMessage(out, "Error: "+e.getMessage());
 			  	} 
-	  		}
-	  			*/
 	  		}
 	  		
 			
@@ -192,9 +194,9 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script>
 	
 	<script src="script.js"></script>
-	<% renderEvents(out, account_id); %>
+	<% renderNotes(out, account_id); %>
 	<script>
-		
+	
 	</script>
 
   </div>
@@ -224,14 +226,17 @@
   	}	
   	
   	public void removeNote(String account_id, String note_id) throws Exception{
-  		if(note_id==null) return;
-  		
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
+		ResultSet verifyAccess = stmt.executeQuery("select * from "+db+"."+relation+" JOIN "+db+"."+table+" USING(note_id) WHERE note_id=\""+note_id+"\" and account_id=\""+account_id+"\"");
+		if(verifyAccess.next() == false){
+  			throw new Exception("Illegal access to note!");
+  		}
 		
-  		stmt.executeUpdate("delete from "+db+"."+table+" where (note_id=\""+note_id+"\")");
   		stmt.executeUpdate("delete from "+db+"."+relation+" where (account_id="+account_id+") and (note_id="+note_id+")");
-  		
+  		stmt.executeUpdate("delete from "+db+"."+table+" where (note_id=\""+note_id+"\")");
+		
+  		verifyAccess.close();
 		stmt.close();
 		con.close();
   	}
@@ -254,7 +259,7 @@
   		out.write("</div>");
   	}
   	
-  	public void renderEvents(javax.servlet.jsp.JspWriter out, String account_id) throws Exception{
+  	public void renderNotes(javax.servlet.jsp.JspWriter out, String account_id) throws Exception{
   		//Range: current/given month
   		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
@@ -264,14 +269,14 @@
 			out.write("$('#calendar').fullCalendar('removeEvents');");	//Refresh event list
 			out.write("var events=[];");		//Initialize list of events
 			
-			//Collect events from database and Add event to list
-			allNotes.next();	//Skip header
-			while(!allNotes.isAfterLast()){
-				out.write("events.push({id:"+allNotes.getInt(1)+", title:'"+allNotes.getString(3)+"', start:'"+allNotes.getString(4)+"T00:00:00', end:'"+allNotes.getString(5)+"T23:00:00', icon:'group'});");	
-				allNotes.next();
+			if(allNotes.next() == true){	//Abort if query set is empty
+				//Collect events from database and Add event to list
+				while(!allNotes.isAfterLast()){
+					out.write("events.push({id:"+allNotes.getInt(1)+", title:'"+allNotes.getString(3)+"', start:'"+allNotes.getString(4)+"T00:00:00', end:'"+allNotes.getString(5)+"T23:00:00', icon:'group'});");	
+					allNotes.next();
+				}
+				out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
 			}
-			
-			out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
 		out.write("</script>");
 		
 		allNotes.close();
