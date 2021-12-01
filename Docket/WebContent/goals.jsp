@@ -28,12 +28,22 @@
 </style>
 
 <html>
-
 <div class="wrapper">
-<% 
-	Class.forName("com.mysql.cj.jdbc.Driver");
-	String account_id=request.getParameter("account_id");	//If account_id not retrieved, will crash
-%>
+	<% 
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		String account_id=request.getParameter("account_id");
+	%>
+	<script>
+		function remove(){
+	   	  var url = window.location.href;
+	  	  if(url.indexOf('&')<0){
+	  	  	window.location.assign(url+'&event_id='+jQuery('#event-id').text());
+	  	  }else{
+	  	  	window.location.assign(url.substring(0,url.indexOf('&'))+'&event_id='+jQuery('#event-id').text());
+	    	  }
+	    }
+	</script>
+	
     <body>
       <div class="calendar">
         <div class="p-5">
@@ -49,14 +59,36 @@
         <div id="modal-view-event" class="modal modal-top fade calendar-modal">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
+                <form id="modify-goal">
                 <div class="modal-body">
-                  <h4 class="modal-title"><span class="event-icon"></span><span class="event-title"></span></h4>
-                  <div class="event-body"></div>
+                  <h4 class="modal-title">
+                    <span class="event-icon"></span>
+                    <span class="event-title"></span>
+                    <span id="event-id" class="event-id" style="display:none"></span>
+                    <span id="event-end" class="event-end" style="display:none"></span>
+                  </h4>
+                  <input type="hidden" name="account_id" value=<%=account_id%> />	<!-- Save account_id on submit --> 
+                  <input type="hidden" name="event_id" id="x-id" />  
+                  <input type="hidden" name="update" value="true" />    
+                  <div class="form-group">
+                    <label>Goal</label>
+                    <textarea class="event-title form-control" name="goal" style="height:200px;"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Start Date (yyyy-mm-dd)</label>
+                    <input id="x-start" type='date' class="event-start form-control" name="goalstartdate">
+                  </div>        
+                  <div class="form-group">
+                    <label>End Date (yyyy-mm-dd)</label>
+                    <input id="x-end" type='date' class="event-end form-control" name="goalenddate">
+                  </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" >Remove</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
+                  <button type="button" class="btn btn-primary" onclick="remove()">Remove</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
+                </form>
               </div>
             </div>
         </div>
@@ -74,11 +106,11 @@
                     <textarea class="form-control" name="goal" style="height:100px;"></textarea>
                   </div>
                   <div class="form-group">
-                    <label>Start Date</label>
+                    <label>Start Date (yyyy-mm-dd)</label>
                     <input type='date' class="form-control" name="goalstartdate">
                   </div>        
                   <div class="form-group">
-                    <label>End Date</label>
+                    <label>End Date (yyyy-mm-dd)</label>
                     <input type='date' class="form-control" name="goalenddate">
                   </div>
               </div>
@@ -92,16 +124,20 @@
         </div>
         
         <% 
-			/*
-			TODO:
-				Display Goals on Calender
-				Create a new Add Goal button instead of clicking on calender
-				View Goal UI + Remove UI/(Modify)
-			*/
 	  		String goal = request.getParameter("goal");
 	  		String goalStartDate = request.getParameter("goalstartdate");
 	  		String goalEndDate = request.getParameter("goalenddate");
-	  		if(goal!=null && goalStartDate!=null && goalEndDate!=null){
+			String goal_id = request.getParameter("event_id");
+			String update = request.getParameter("update");
+			
+			if(update!=null&&update.equals("true")){
+  				try{
+	  				updateGoal(goal_id, goal, goalStartDate, goalEndDate);
+					//displayMessage(out, "Goal updated!");
+	  			} catch (Exception e) {
+	  				displayMessage(out, "Error: "+e.getMessage());
+	  			}
+			}else if((goal!=null && goalStartDate!=null && goalEndDate!=null) && goal_id==null){
 	  			try{
 		  			addGoal(account_id, goal, goalStartDate, goalEndDate);
 		  			displayMessage(out, "Goal added!");
@@ -109,24 +145,13 @@
 		  			//MysqlDataTruncation = incorrect date format
 		  			displayMessage(out, "Error: "+e.getMessage());
 			  	}
-	  			/*
-	  		else if(//update-vars are not null){
-  				try{
-	  				updateGoal(//goal_id, //goal, //goalStartDate, //goalEndDate);
- 					displayMessage(out, "Goal updated!");
-	  			} catch (Exception e) {
-	  				displayMessage(out, "Error: "+e.getMessage());
-			  	} 
-	  		}
-	  		else if(toggle-remove not null){
+	  		}else if(goal_id!=null){
 	  			try{
-	  				removeGoal(account_id, //goal_id);
+	  				removeGoal(account_id, goal_id);
 	  				displayMessage(out, "Goal removed!");
 	  			} catch (Exception e) {
 	  				displayMessage(out, "Error: "+e.getMessage());
 			  	} 
-	  		}
-	  			*/
 	  		}
 	  		
 
@@ -170,7 +195,7 @@
           <i class="menu__icon fa fa-calendar"></i>
           <span class="menu__text">calendar</span>
         </a>
-        <a class="menu__item" href="#">
+        <a class="menu__item" href="settings.jsp?account_id=<%=account_id%>">
           <i class="menu__icon fa fa-sliders"></i>
           <span class="menu__text">settings</span>
         </a>
@@ -187,10 +212,8 @@
      <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/datepicker.js'></script>
      <script src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script>
      <script src="./script.js"></script>
-     <script>
-		$('#calendar').fullCalendar('removeEvents');
-		document.write("hi");
-	 </script>
+     <% renderGoals(out, account_id); %>
+     
   </div>
 </html>
 <%!
@@ -210,6 +233,7 @@
 		int goal_id = maxId.getInt(1)+1;
 		maxId.close();
 		
+		goal = goal.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
   		stmt.executeUpdate("insert into "+db+"."+table+" (goal_id, goal, start_date, end_date) VALUES (\""+goal_id+"\", \""+goal+"\", \""+start+"\", \""+end+"\")");
 		stmt.executeUpdate("insert into "+db+"."+relation+" (account_id, goal_id) values ("+account_id+", "+goal_id+")");
   		
@@ -220,10 +244,15 @@
   	public void removeGoal(String account_id, String goal_id) throws Exception{
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
+		ResultSet verifyAccess = stmt.executeQuery("select * from "+db+"."+relation+" JOIN "+db+"."+table+" USING(goal_id) WHERE goal_id=\""+goal_id+"\" and account_id=\""+account_id+"\"");
+		if(verifyAccess.next() == false){
+  			throw new Exception("Could not remove goal!");
+  		}
 		
   		stmt.executeUpdate("delete from "+db+"."+table+" where (goal_id=\""+goal_id+"\")");
   		stmt.executeUpdate("delete from "+db+"."+relation+" where (account_id="+account_id+") and (goal_id="+goal_id+")");
   		
+  		verifyAccess.close();
 		stmt.close();
 		con.close();
   	}
@@ -232,7 +261,24 @@
   		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
 		
-  		stmt.executeUpdate("update "+db+"."+table+" set goal=\""+goal+"\", start_date=\""+start+"\", end_date=\""+end+"\" where goal_id=\""+goal_id+"\"");
+		String query = "update "+db+"."+table+" set ";
+		boolean notFirst = false;
+		if(!goal_id.isEmpty()){
+			query += "goal=\""+goal+"\"";
+			notFirst=true;
+		}
+		if(!start.isEmpty()){
+			if(notFirst) query += ", ";
+			query += "start_date=\""+start+"\"";
+			notFirst=true;
+		}
+		if(!end.isEmpty()){
+			if(notFirst) query += ", ";
+			query += "end_date=\""+end+"\"";
+		}
+		query += " where goal_id=\""+goal_id+"\"";
+		
+  		stmt.executeUpdate(query);
   		
 		stmt.close();
 		con.close();
@@ -244,6 +290,33 @@
   		out.write(message);
   		out.write("</div>");
   		out.write("</div>");
+  	}
+  	
+  	public void renderGoals(javax.servlet.jsp.JspWriter out, String account_id) throws Exception{
+  		//Range: current/given month
+  		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
+		Statement stmt = con.createStatement();
+		ResultSet allGoals = stmt.executeQuery("select * from "+db+"."+relation+" JOIN "+db+"."+table+" USING(goal_id) WHERE account_id=\""+account_id+"\"");
+		
+		out.write("<script>");
+			out.write("$('#calendar').fullCalendar('removeEvents');");	//Refresh event list
+			out.write("var events=[];");		//Initialize list of events
+			
+			if(allGoals.next() == true){	//Abort if query set is empty
+				//Collect events from database and Add event to list
+				while(!allGoals.isAfterLast()){
+					String text = allGoals.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
+					
+					out.write("events.push({id:"+allGoals.getInt(1)+", title:'"+text+"', start:'"+allGoals.getString(4)+"T00:00:00', end:'"+allGoals.getString(5)+"T23:00:00', icon:'group'});");	
+					allGoals.next();
+				}
+				out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
+			}
+		out.write("</script>");
+		
+		allGoals.close();
+	 	stmt.close();
+		con.close();
   	}
 %>
 

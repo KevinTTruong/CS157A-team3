@@ -31,8 +31,19 @@
 <div class="wrapper">
 	<% 
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		String account_id=request.getParameter("account_id");	//If account_id not retrieved, will crash
+		String account_id=request.getParameter("account_id");
 	%>
+	<script>
+		function remove(){
+	   	  var url = window.location.href;
+	  	  if(url.indexOf('&')<0){
+	  	  	window.location.assign(url+'&event_id='+jQuery('#event-id').text());
+	  	  }else{
+	  	  	window.location.assign(url.substring(0,url.indexOf('&'))+'&event_id='+jQuery('#event-id').text());
+	    	  }
+	    }
+		
+	</script>
 	
     <body>
 		
@@ -50,18 +61,36 @@
         <div id="modal-view-event" class="modal modal-top fade calendar-modal">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
+              <form id="modifynote">
                 <div class="modal-body">
                   <h4 class="modal-title">
                     <span class="event-icon"></span>
                     <span class="event-title"></span>
-                    <span  id="event-id" class="event-id" style="display:none"></span>
+                    <span id="event-id" class="event-id" style="display:none"></span>
+                    <span id="event-end" class="event-end" style="display:none"></span>
                   </h4>
+                  <input type="hidden" name="account_id" value=<%=account_id%> />	<!-- Save account_id on submit --> 
+                  <input type="hidden" name="event_id" id="x-id" />  
+                  <input type="hidden" name="update" value="true" />    
+                  <div class="form-group">
+                    <label>Notes</label>
+                    <textarea class="event-title form-control" name="note" style="height:200px;"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Start Date (yyyy-mm-dd)</label>
+                    <input id="x-start" type='date' class="event-start form-control" name="notestartdate">
+                  </div>        
+                  <div class="form-group">
+                    <label>End Date (yyyy-mm-dd)</label>
+                    <input id="x-end" type='date' class="event-end form-control" name="noteenddate">
+                  </div>
                 </div>
-        			<script></script>
                 <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary" onclick="window.location.assign(window.location.href+'&note_id='+jQuery('#event-id').text());">Remove</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
+                  <button type="button" class="btn btn-primary" onclick="remove()">Remove</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
+              </form>
               </div>
             </div>
         </div>
@@ -97,19 +126,20 @@
         </div>
         
         <% 
-			/*
-			TODO:
-				Render: invalid or unexpected token
-				Change start/end to datetime
-				View Note UI/Modify
-				Update to Goals
-			*/
 	  		String note = request.getParameter("note");
-	  		String noteStartDate = request.getParameter("notestartdate");
-	  		String noteEndDate = request.getParameter("noteenddate");
-	  		String note_id = request.getParameter("note_id");
+			String noteStartDate = request.getParameter("notestartdate");
+			String noteEndDate = request.getParameter("noteenddate");
+			String note_id = request.getParameter("event_id");
+			String update = request.getParameter("update");
 	  		
-	  		if(note!=null && noteStartDate!=null && noteEndDate!=null){
+	  		if(update!=null&&update.equals("true")){
+  				try{
+	  				updateNote(note_id, note, noteStartDate, noteEndDate);
+					//displayMessage(out, "Note updated!");
+	  			} catch (Exception e) {
+	  				displayMessage(out, "Error: "+e.getMessage());
+	  			}
+			}else if((note!=null && noteStartDate!=null && noteEndDate!=null) && note_id==null){
 	  			try{
 		  			addNote(account_id, note, noteStartDate, noteEndDate);
 		  			displayMessage(out, "Note added!");
@@ -117,15 +147,6 @@
 		  			//MysqlDataTruncation = incorrect date format
 			  		displayMessage(out, "Error: "+e.getMessage());
 			  	} 
-	  		/*
-	  		}else if(note_id!=null){
-  				try{
-	  				updateNote(//note_id, //note, //noteStartDate, //noteEndDate);
-					displayMessage(out, "Note updated!");
-	  			} catch (Exception e) {
-	  				displayMessage(out, "Error: "+e.getMessage());
-			  	} 
-  			*/
 	  		}else if(note_id!=null){
 	  			try{
 	  				removeNote(account_id, note_id);
@@ -176,7 +197,7 @@
           <i class="menu__icon fa fa-calendar"></i>
           <span class="menu__text">calendar</span>
         </a>
-        <a class="menu__item" href="#">
+        <a class="menu__item" href="settings.jsp?account_id=<%=account_id%>">
           <i class="menu__icon fa fa-sliders"></i>
           <span class="menu__text">settings</span>
         </a>
@@ -195,9 +216,6 @@
 	
 	<script src="script.js"></script>
 	<% renderNotes(out, account_id); %>
-	<script>
-	
-	</script>
 
   </div>
 </html>
@@ -218,6 +236,7 @@
 		int note_id = maxId.getInt(1)+1;
 		maxId.close();
 		
+		note = note.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
   		stmt.executeUpdate("insert into "+db+"."+table+" (note_id, notes, start_date, end_date) VALUES (\""+note_id+"\", \""+note+"\", \""+start+"\", \""+end+"\")");
 		stmt.executeUpdate("insert into "+db+"."+relation+" (account_id, note_id) values ("+account_id+", "+note_id+")");
   		
@@ -230,7 +249,7 @@
 		Statement stmt = con.createStatement();
 		ResultSet verifyAccess = stmt.executeQuery("select * from "+db+"."+relation+" JOIN "+db+"."+table+" USING(note_id) WHERE note_id=\""+note_id+"\" and account_id=\""+account_id+"\"");
 		if(verifyAccess.next() == false){
-  			throw new Exception("Illegal access to note!");
+  			throw new Exception("Could not remove note!");
   		}
 		
   		stmt.executeUpdate("delete from "+db+"."+relation+" where (account_id="+account_id+") and (note_id="+note_id+")");
@@ -245,7 +264,24 @@
   		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
 		
-  		stmt.executeUpdate("update "+db+"."+table+" set notes=\""+note+"\", start_date=\""+start+"\", end_date=\""+end+"\" where note_id=\""+note_id+"\"");
+		String query = "update "+db+"."+table+" set ";
+		boolean notFirst = false;
+		if(!note_id.isEmpty()){
+			query += "notes=\""+note+"\"";
+			notFirst=true;
+		}
+		if(!start.isEmpty()){
+			if(notFirst) query += ", ";
+			query += "start_date=\""+start+"\"";
+			notFirst=true;
+		}
+		if(!end.isEmpty()){
+			if(notFirst) query += ", ";
+			query += "end_date=\""+end+"\"";
+		}
+		query += " where note_id=\""+note_id+"\"";
+		
+  		stmt.executeUpdate(query);
   		
 		stmt.close();
 		con.close();
@@ -272,7 +308,9 @@
 			if(allNotes.next() == true){	//Abort if query set is empty
 				//Collect events from database and Add event to list
 				while(!allNotes.isAfterLast()){
-					out.write("events.push({id:"+allNotes.getInt(1)+", title:'"+allNotes.getString(3)+"', start:'"+allNotes.getString(4)+"T00:00:00', end:'"+allNotes.getString(5)+"T23:00:00', icon:'group'});");	
+					String text = allNotes.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
+					
+					out.write("events.push({id:"+allNotes.getInt(1)+", title:'"+text+"', start:'"+allNotes.getString(4)+"T00:00:00', end:'"+allNotes.getString(5)+"T23:00:00', icon:'group'});");	
 					allNotes.next();
 				}
 				out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
