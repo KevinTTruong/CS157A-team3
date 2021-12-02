@@ -138,7 +138,7 @@
 	String newPassword = request.getParameter("newPassword");
 	
 	try{
-		if(checkPass(out, enteredPass, account_id)){
+		if(enteredPass!=null && checkPass(out, enteredPass, account_id)){
 			if (uph.equals("true") && newPhone != null) {
 				updatePhone(account_id, newPhone);
 				displayMessage(out, "Account info updated!");
