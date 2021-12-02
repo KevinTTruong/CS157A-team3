@@ -81,6 +81,7 @@ jQuery('#calendar').fullCalendar({
       eventClick: function(event, jsEvent, view) {
           jQuery('.event-icon').html("<i class='fa fa-"+event.icon+"'></i>");
           jQuery('.event-title').html(event.title);
+          jQuery('.event-desc').html(event.description);
           jQuery('.event-start').html(event.start.format("YYYY-MM-DD").toString());
           jQuery('.event-end').html(event.end.format("YYYY-MM-DD").toString());
           jQuery('.event-id').html(event.id);
