@@ -129,7 +129,6 @@
 			String noteEndDate = request.getParameter("noteenddate");
 			String note_id = request.getParameter("event_id");
 			String update = request.getParameter("update");
-			String notification = request.getParameter("notif-type");
 	  		
 	  		if(update!=null&&update.equals("true")){
   				try{
