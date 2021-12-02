@@ -66,6 +66,8 @@
                   <h4 class="modal-title">
                     <span class="event-icon"></span>
                     <span class="event-title"></span>
+                    <span id="event-id" class="event-id" style="display:none"></span>
+                    <span id="event-end" class="event-end" style="display:none"></span>
                   </h4>
                   <input type="hidden" name="account_id" value=<%=account_id%> />	<!-- Save account_id on submit --> 
                   <input type="hidden" name="event_id" id="x-id" />  
@@ -129,6 +131,7 @@
 			String noteEndDate = request.getParameter("noteenddate");
 			String note_id = request.getParameter("event_id");
 			String update = request.getParameter("update");
+			String notification = request.getParameter("notif-type");
 	  		
 	  		if(update!=null&&update.equals("true")){
   				try{
