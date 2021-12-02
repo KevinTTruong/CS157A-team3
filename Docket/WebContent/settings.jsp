@@ -20,6 +20,14 @@
 	  border: 1px solid #888;
 	  width: 80%;
 	}
+	
+	/* page style*/
+	   .top-style{ 
+       position: fixed;     
+       text-align: top;    
+       top: 30px;
+       width: 100%;
+   }
 </style>
 
 <html>
@@ -100,7 +108,10 @@
 	}
 </script>
 
-<form id="settings-form">
+<form id="settings-form" class="top-style">
+		<div class="pt-2">
+			<h2 class="m-2" style="font-size: 50px;">Docket</h2>
+		</div>
 	<div class="modal-body">
 		<h4>Edit Account</h4>
 		<div class="form-group">

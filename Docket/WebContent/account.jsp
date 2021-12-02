@@ -27,10 +27,19 @@
 	%>
 </div>
 
+ <style type ="text/css" >
+   .top-style{ 
+       position: fixed;     
+       text-align: top;    
+       top: 30px;
+       width: 100%;
+   }
+   </style>
+
 <body>
-	<div class="account">
-		<div class="p-5">
-			<h2 class="mb-4" style="font-size: 40px;">Docket</h2>
+	<div class="top-style">
+		<div class="pt-2">
+			<h2 class="m-2" style="font-size: 50px;">Docket</h2>
 		</div>
 		<form id="login-form"
 			action="${pageContext.servletContext.contextPath}/submit"
@@ -51,15 +60,15 @@
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-primary" name="login-button"
 					value="login">Login</button>
+							<!-- Button trigger create account modal -->
+		<button type="button" class="btn btn-primary" data-toggle="modal"
+			data-target="#createAccount">Create Account</button>
 			</div>
 		</form>
 	</div>
 
 
 	<div>
-		<!-- Button trigger create account modal -->
-		<button type="button" class="btn btn-primary" data-toggle="modal"
-			data-target="#createAccount">Create Account</button>
 
 		<!-- Create account modal -->
 		<div class="modal fade" id="createAccount" tabindex="-1" role="dialog">
