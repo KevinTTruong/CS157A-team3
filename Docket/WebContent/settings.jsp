@@ -1,4 +1,26 @@
 <%@ page import="java.sql.*"%>
+	
+<style>
+	.modal-message {
+	  display: none;
+	  position: fixed;
+	  z-index: 1;
+	  left: 0;
+	  top: 0;
+	  width: 100%;
+	  height: 100%;
+	  background-color: rgba(0,0,0,0.4);
+	}
+	
+	/* Modal Content */
+	.modal-message-content {
+	  background-color: #fefefe;
+	  margin: auto;
+	  padding: 100px;
+	  border: 1px solid #888;
+	  width: 80%;
+	}
+</style>
 
 <html>
 <div class="wrapper">
@@ -16,6 +38,8 @@
 	<link rel='stylesheet'
 		href='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/css/datepicker.css'>
 	<link rel="stylesheet" href="./main.css">
+
+
 	<%
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		String account_id = request.getParameter("account_id");
@@ -28,6 +52,10 @@
 		String password="";
 		long phone;
 		
+		String uph = request.getParameter("uph");
+		String uss = request.getParameter("uss");
+		String enteredPass = request.getParameter("password");
+		
 		//Load information
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
@@ -35,12 +63,20 @@
 		accountInfo.next();	//Skip header
 		
 		email = accountInfo.getString(1);
-		String tempPass = accountInfo.getString(2);
+		
+		//Get password
+		String tempPass;
+		if(uss!=null && uss.equals("true") && checkPass(out, enteredPass, account_id)){
+			tempPass  = request.getParameter("newPassword");
+		}else{
+			tempPass = accountInfo.getString(2);
+		}
+		
 		
 		//Get phone number
-		String phoneNumber = request.getParameter("phone");
-		if(phoneNumber!=null){
-			phone = Long.parseLong(phoneNumber);
+		String phoneNumber;
+		if(uph!=null && uph.equals("true") && checkPass(out, enteredPass, account_id)){
+			phone = Long.parseLong(request.getParameter("phone"));
 		}else{
 			phone = Long.parseLong(accountInfo.getString(3));
 		}
@@ -57,7 +93,10 @@
 
 <script>
 	function phoneChanged(){
-		document.getElementById("update").value="true";
+		document.getElementById("uph").value="true";
+	}
+	function passChanged(){
+		document.getElementById("uss").value="true";
 	}
 </script>
 
@@ -68,17 +107,20 @@
 			<label>Email</label> <input type="text" class="form-control"
 				name="email" value=<%=email%> disabled="disabled" readonly/>
 		</div>
-		<input type="hidden" name="account_id" value=<%=account_id%> />
-		<input type="hidden" id="update" name="update" value="false" />
+		<input type="hidden" name="account_id" value=<%=account_id %> />
+		<input type="hidden" id="uph" name="uph" value="false" />
+		<input type="hidden" id="uss" name="uss" value="false" />
 		<div class="form-group">
 			<label>Phone Number</label>
 			<input type="number" class="form-control" name="phone" onchange="phoneChanged()" value=<%=phone %> />
 		</div>
 		<div class="form-group">
-			<label>Password
-				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePassword" >Change Password</button>
-			</label> 
-			<input type="text" class="form-control" name="password" disabled="disabled" value=<%=password %> readonly />
+			<label>Change Password</label> 
+			<input type="text" class="form-control" name="newPassword" onchange="passChanged()" value=<%=password %> />
+		</div>
+		<div class="form-group">
+			<label>Enter Current Password to Save Changes</label> 
+			<input type="text" class="form-control" name="password" />
 		</div>
 	</div>
 	<div class="modal-footer">
@@ -87,38 +129,47 @@
 	</div>
 </form>
 
-<div class="modal fade" id="changePassword" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<form id="password-form">
-				<div class="modal-body">
-					<h4>Change Password</h4>
-					<div class="form-group">
-						<label>Current Password</label> <input type="text" class="form-control" name="password" required />
-					</div>
-					<div class="form-group">
-						<label>New Password</label> <input type="text" class="form-control" name="newPassword" required />
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">Change Password</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
+
 
 <%
 
 	//String password = request.getParameter("password");
 	String newPhone = request.getParameter("phone");
-	String phoneUpdated = request.getParameter("update");
+	String newPassword = request.getParameter("newPassword");
 	
-	if (phoneUpdated=="true" && newPhone != null) {
-		updatePhone(account_id, newPhone);
+	try{
+		if(checkPass(out, enteredPass, account_id)){
+			if (uph.equals("true") && newPhone != null) {
+				updatePhone(account_id, newPhone);
+				displayMessage(out, "Account info updated!");
+			}
+			if(uss.equals("true") && newPassword != null){
+				updatePassword(account_id, newPassword);
+				displayMessage(out, "Account info updated!");
+			}
+		}else if(enteredPass != null && (uph!=null || uss!=null)){
+			displayMessage(out, "Incorrect password.");
+		}
+	} catch(Exception e){
+		displayMessage(out, "Error: "+e.getMessage());
 	}
 %>
+
+<!-- Success/Error message -->
+<script>
+	// Get the modal
+	var modal_message = document.getElementById("message");
+	
+	modal_message.style.display = "block";
+	
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+	  if (event.target == modal_message) {
+	    modal_message.style.display = "none";
+	  }
+	}
+</script>
+
 <%!
 	String user = "docket";
 	String pass = "!d0ckeT2t3";
@@ -130,22 +181,43 @@
 		Statement stmt = con.createStatement();
 		
 		stmt.executeUpdate("update "+db+"."+table+" set phone=\'"+phone+"\' where (account_id=\'"+account_id+"\')");
-		//UPDATE `docket`.`account` SET `phone` = '4087855673' WHERE (`account_id` = '5');
+		stmt.close();
+		con.close();
+	}
+	
+	public void updatePassword(String account_id, String newPassword) throws Exception{
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
+		Statement stmt = con.createStatement();
+		
+		stmt.executeUpdate("update "+db+"."+table+" set password=\'"+newPassword+"\' where (account_id=\'"+account_id+"\')");
 		
 		stmt.close();
 		con.close();
 	}
 	
-	public void updatePassword(String account_id, String oldPassword, String newPassword) throws Exception{
+	public boolean checkPass(javax.servlet.jsp.JspWriter out, String password, String account_id) throws Exception{
+		if(password.isEmpty()) return false;
+		
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
+		ResultSet accountPass = stmt.executeQuery("select password from "+table+" where account_id=\""+account_id+"\"");
 		
-		stmt.executeUpdate("update "+db+"."+table+" set password=\'"+newPassword+"\' where (account_id=\'"+account_id+"\')");
-		//UPDATE `docket`.`account` SET `phone` = '4087855673' WHERE (`account_id` = '5');
+		accountPass.next();	//Skip header
+		boolean check = password.equals(accountPass.getString(1));
 		
 		stmt.close();
 		con.close();
+		
+		return check;
 	}
+	
+  	public void displayMessage(javax.servlet.jsp.JspWriter out, String message) throws Exception{
+  		out.write("<div id=\"message\" class=\"modal-message\">");
+  		out.write("<div class=\"modal-message-content\">");
+  		out.write(message);
+  		out.write("</div>");
+  		out.write("</div>");
+  	}
 %>
 
 </body>
