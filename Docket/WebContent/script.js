@@ -83,16 +83,18 @@ jQuery('#calendar').fullCalendar({
           jQuery('.event-title').html(event.title);
           jQuery('.event-desc').html(event.description);
           jQuery('.event-start').html(event.start.format("YYYY-MM-DD").toString());
-          jQuery('.event-end').html(event.end.format("YYYY-MM-DD").toString());
+          if(event.end!=undefined){
+        	  jQuery('.event-end').html(event.end.format("YYYY-MM-DD").toString());
+          }
           jQuery('.event-id').html(event.id);
-          jQuery('.event-body').html(event.description);
           jQuery('.eventUrl').attr('href',event.url);
-          jQuery('#modal-view-event').modal();
+          
+          
+          jQuery('#modal-view-event').modal();          
           
           document.getElementById("x-id").value=jQuery("#event-id").text();
           document.getElementById("x-start").value=event.start.format("YYYY-MM-DD").toString();
           document.getElementById("x-end").value=event.end.format("YYYY-MM-DD").toString();
-          console.log(event.start.toDate().toString());
       }
 });
 
