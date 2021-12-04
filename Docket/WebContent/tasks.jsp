@@ -1,14 +1,33 @@
 <%@ page import="java.sql.*" import="java.text.SimpleDateFormat"
 	import="java.util.Date"%>
 
+<style>
+	.modal-message {
+	  display: none;
+	  position: fixed;
+	  z-index: 1;
+	  left: 0;
+	  top: 0;
+	  width: 100%;
+	  height: 100%;
+	  background-color: rgba(0,0,0,0.4);
+	}
+	
+	/* Modal Content */
+	.modal-message-content {
+	  background-color: #fefefe;
+	  margin: auto;
+	  padding: 100px;
+	  border: 1px solid #888;
+	  width: 80%;
+	}
+</style>
+
 <html>
 <div class="wrapper">
 	<%
 	Class.forName("com.mysql.cj.jdbc.Driver");
 	String account_id = request.getParameter("account_id");
-	
-	
-	
 	%>
 	<script>
 		function remove() {
@@ -48,44 +67,79 @@
 
 			</div>
 
-			<!-- calendar modal -->
-			<div id="modal-view-event"
-				class="modal modal-top fade calendar-modal">
+			<!-- View task -->
+			<div id="modal-view-event" class="modal modal-top fade calendar-modal">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
-						<div class="modal-body">
-							<h4 class="modal-title">
-								<span class="event-icon"></span><span class="event-title"></span>
-							</h4>
-							<div class="event-body"></div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary">Remove</button>
-							<button type="button" class="btn btn-primary"
-								data-dismiss="modal">Close</button>
-						</div>
+						<form id="modifytask">
+							<div class="modal-body">
+								<h4 class="modal-title">
+									<span class="event-icon"></span>
+									<span class="event-title"></span>
+                    				<span id="event-id" class="event-id" style="display:none"></span>
+                    				<span id="event-time" class="event-time" style="display:none"></span>
+								</h4>
+								<input type="hidden" name="account_id" value=<%=account_id%> /> <!-- Save account_id on submit -->
+								<input type="hidden" name="event_id" id="x-id" />
+								<input type="hidden" name="update" value="true" />
+								<div class="form-group">
+									<label>Task</label>
+									<textarea class="event-title form-control" name="task"
+										style="height: 200px;"></textarea>
+								</div>
+								<div class="form-group">
+									<label>Task Description</label>
+									<textarea class="form-control" name="edesc"></textarea>
+								</div>
+								<div class="form-group">
+									<label>Date (yyyy-mm-dd)</label> <input id="x-startdate"
+										type='date' class="event-start form-control" name="edate">
+								</div>
+								<div class="form-group">
+									<label>Time (hh:mm:ss)</label> <input id="x-starttime" type='time'
+										class="event-time form-control" name="etime">
+								</div>
+								<div class="form-group">
+									<label>Notification Type</label> <select class="form-control"
+										name="notif-type">
+										<option value="email">email</option>
+										<option value="text">text</option>
+									</select>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">Save</button>
+								<button type="button" class="btn btn-primary" onclick="remove()">Remove</button>
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal">Close</button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
 
-			<div id="modal-view-event-add"
-				class="modal modal-top fade calendar-modal">
+			<!-- Add task -->
+			<div id="modal-view-event-add" class="modal modal-top fade calendar-modal">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<form id="add-event">
 							<div class="modal-body">
-								<h4>Add Event Detail</h4>
+								<h4>Add Task</h4>
 								<div class="form-group">
-									<label>Event name</label> <input type="text"
+									<label>Task Name</label> <input type="text"
 										class="form-control" name="ename">
 								</div>
 								<div class="form-group">
-									<label>Event Date</label> <input type='text'
-										class="datetimepicker form-control" name="edate">
+									<label>Task Description</label>
+									<textarea class="form-control" name="edesc"></textarea>
 								</div>
 								<div class="form-group">
-									<label>Event Description</label>
-									<textarea class="form-control" name="edesc"></textarea>
+									<label>Date (yyyy-mm-dd)</label> <input
+										type='date' class="form-control" name="edate">
+								</div>
+								<div class="form-group">
+									<label>Time (hh:mm:ss)</label> <input type='time'
+										class="form-control" name="etime">
 								</div>
 								<!-- 
 								<div class="form-group">
@@ -106,7 +160,7 @@
 									</select>
 								</div>-->
 								<div class="form-group">
-									<label>Notification</label> <select class="form-control"
+									<label>Notification Type</label> <select class="form-control"
 										name="notif-type">
 										<option value="email">email</option>
 										<option value="text">text</option>
@@ -123,69 +177,11 @@
 				</div>
 			</div>
 
-			<!-- View task -->
-			<div id="modal-view-event"
-				class="modal modal-top fade calendar-modal">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<form id="modifytask">
-							<div class="modal-body">
-								<h4 class="modal-title">
-									<span class="event-icon"></span> <span class="event-title"></span>
-								</h4>
-								<input type="hidden" name="account_id" value=<%=account_id%> />
-								<!-- Save account_id on submit -->
-								<input type="hidden" name="event_id" id="x-id" /> <input
-									type="hidden" name="update" value="true" />
-								<div class="form-group">
-									<label>Task</label>
-									<textarea class="event-title form-control" name="task"
-										style="height: 200px;"></textarea>
-								</div>
-								<div class="form-group">
-									<label>Description</label> <input type='text'
-										class="event-desc form-control" name="desc"
-										style="height: 200px;">
-								</div>
-								<div class="form-group">
-									<label>Date (yyyy-mm-dd)</label> <input id="x-start"
-										type='date' class="event-start form-control" name="date">
-								</div>
-								<div class="form-group">
-									<label>Time (hh:mm:ss)</label> <input id="x-start" type='time'
-										class="event-time form-control" name="time">
-								</div>
-								<div class="form-group">
-									<label>Notification</label>
-									<!-- TODO: drop down menu -->
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button type="submit" class="btn btn-primary">Save</button>
-								<button type="button" class="btn btn-primary" onclick="remove()">Remove</button>
-								<button type="button" class="btn btn-primary"
-									data-dismiss="modal">Close</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-
 			<%
 			String taskName = request.getParameter("ename");
 			String taskDesc = request.getParameter("edesc");
-			String dateTime = request.getParameter("edate");
-			String date = "";
-			String time = "";
-			if (dateTime != null) {
-				String original = dateTime.substring(0, dateTime.indexOf(" ")).replaceAll("/", "-");
-				date = original.substring(6) + "-" + original.substring(0, 5);
-
-				SimpleDateFormat military = new SimpleDateFormat("HH:mm");
-				SimpleDateFormat normal = new SimpleDateFormat("hh:mm a");
-				Date parsedTime = normal.parse(dateTime.substring(dateTime.indexOf(" ") + 1));
-				time = military.format(parsedTime) + ":00";
-			}
+			String date = request.getParameter("edate");
+			String time = request.getParameter("etime");
 			String taskNotif = request.getParameter("notif-type");
 			String update = request.getParameter("update");
 			String task_id = request.getParameter("event_id");
@@ -194,8 +190,8 @@
 
 			if (update != null && update.equals("true")) {
 				try {
-					//updateNote(account_id, taskName, taskDesc, taskTime, taskNotif);
-					//displayMessage(out, "Note updated!");
+					updateTask(task_id, taskName, taskDesc, date, time, taskNotif);
+					displayMessage(out, "Task updated!");
 				} catch (Exception e) {
 					displayMessage(out, "Error: " + e.getMessage());
 				}
@@ -203,15 +199,15 @@
 					&& task_id == null) {
 				try {
 					addTask(account_id, taskName, taskDesc, date, time, taskNotif);
-					displayMessage(out, "Note added!");
+					displayMessage(out, "Task added!");
 				} catch (Exception e) {
 					//MysqlDataTruncation = incorrect date format
 					displayMessage(out, "Error: " + e.getMessage());
 				}
 			} else if (task_id != null) {
 				try {
-					//removeNote(account_id, task_id);
-					displayMessage(out, "Note removed!");
+					removeTask(account_id, task_id);
+					displayMessage(out, "Task removed!");
 				} catch (Exception e) {
 					displayMessage(out, "Error: " + e.getMessage());
 				}
@@ -260,7 +256,9 @@
 	<script
 		src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script>
 	<script src="./script.js"></script>
-		<% renderTasks(out, account_id); %>
+	<%
+	renderTasks(out, account_id);
+	%>
 </div>
 </html>
 
@@ -297,7 +295,6 @@
 		desc = desc.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
 		title = title.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
 
-
 		stmt.executeUpdate("insert into " + db + "." + table + " (task_id, title, description, date, time) VALUES (\""
 				+ task_id + "\", \"" + title + "\", \"" + desc + "\", \"" + date + "\", \"" + time + "\")");
 		stmt.executeUpdate("insert into " + db + "." + relation + " (account_id, task_id) values (" + account_id + ", "
@@ -310,58 +307,96 @@
 		stmt.close();
 		con.close();
 	}
-	/*
-	public void removeNote(String account_id, String task_id) throws Exception{
-		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
+
+	public void removeTask(String account_id, String task_id) throws Exception {
+		Connection con = DriverManager
+				.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
-		
+
 		//Verify Account access
-		ResultSet verifyAccess = stmt.executeQuery("select * from "+db+"."+relation+" JOIN "+db+"."+table+" USING(task_id) WHERE tasj_id=\""+task_id+"\" and account_id=\""+account_id+"\"");
-		if(verifyAccess.next() == false){
-				throw new Exception("Could not remove task!");
-			}
-		
+		ResultSet verifyAccess = stmt.executeQuery("select * from " + db + "." + relation + " JOIN " + db + "." + table
+				+ " USING(task_id) WHERE task_id=\"" + task_id + "\" and account_id=\"" + account_id + "\"");
+		if (verifyAccess.next() == false) {
+			throw new Exception("Could not remove task!");
+		}
+
 		//Get notification_id
-		ResultSet getNotiId = stmt.executeQuery("SELECT notification_id FROM "+db+"."+notifyRelation+" WHERE task_id=5");
+		ResultSet getNotiId = stmt
+				.executeQuery("SELECT notification_id FROM " + db + "." + notifyRelation + " WHERE task_id=" + task_id);
 		getNotiId.next();
-		int noti_id = getNotiId.getInt(1)+1;
+		int noti_id = getNotiId.getInt(1) + 1;
 		getNotiId.close();
-		
+
 		//SELECT notification_id FROM docket.set_notification WHERE task_id=5;
-		stmt.executeUpdate("delete from "+db+"."+relation+" where (account_id="+account_id+") and (note_id="+note_id+")");
-		stmt.executeUpdate("delete from "+db+"."+table+" where (note_id=\""+note_id+"\")");
-	
+		stmt.executeUpdate("delete from " + db + "." + relation + " where (account_id=" + account_id + ") and (task_id="
+				+ task_id + ")");
+		stmt.executeUpdate("delete from " + db + "." + notifyRelation + " where (notification_id=" + noti_id
+				+ ") and (task_id=" + task_id + ")");
+		stmt.executeUpdate("delete from " + db + "." + table + " where (task_id=\"" + task_id + "\")");
+		stmt.executeUpdate("delete from " + db + "." + notifyTable + " where (notification_id=\"" + noti_id + "\")");
+
 		verifyAccess.close();
 		stmt.close();
 		con.close();
 	}
-	
-	public void updateNote(String note_id, String note, String start, String end) throws Exception{
-		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
+
+	public void updateTask(String task_id, String title, String desc, String date, String time, String notificationType)
+			throws Exception {
+		Connection con = DriverManager
+				.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
-		
-		String query = "update "+db+"."+table+" set ";
+
+		String taskQuery = "update " + db + "." + table + " set ";
 		boolean notFirst = false;
-		if(!note_id.isEmpty()){
-			query += "notes=\""+note+"\"";
-			notFirst=true;
+		if (!task_id.isEmpty()) {
+			taskQuery += "title=\"" + title + "\"" + "desc=\"" + desc + "\"";
+			notFirst = true;
 		}
-		if(!start.isEmpty()){
-			if(notFirst) query += ", ";
-			query += "start_date=\""+start+"\"";
-			notFirst=true;
+		if (!date.isEmpty()) {
+			if (notFirst)
+				taskQuery += ", ";
+			taskQuery += "date=\"" + date + "\"";
+			notFirst = true;
 		}
-		if(!end.isEmpty()){
-			if(notFirst) query += ", ";
-			query += "end_date=\""+end+"\"";
+		if (!time.isEmpty()) {
+			if (notFirst)
+				taskQuery += ", ";
+			taskQuery += "time=\"" + time + "\"";
 		}
-		query += " where note_id=\""+note_id+"\"";
-		
-			stmt.executeUpdate(query);
-			
+		taskQuery += " where task_id=\"" + task_id + "\"";
+
+		ResultSet notifId = stmt.executeQuery(
+				"select notification_id from " + db + "." + notifyRelation + " where task_id=\"" + task_id + "\"");
+		notifId.next();
+		int notification_id = notifId.getInt(1) + 1;
+		notifId.close();
+		System.out.println("notification id is " + task_id);
+
+		String notifQuery = "update " + db + "." + notifyTable + " set ";
+		notFirst = false;
+		if (!date.isEmpty()) {
+			notifQuery += "date=\"" + date + "\"";
+			notFirst = true;
+		}
+		if (!time.isEmpty()) {
+			if (notFirst)
+				notifQuery += ", ";
+			notifQuery += "time=\"" + time + "\"";
+			notFirst = true;
+		}
+		if (!notificationType.isEmpty()) {
+			if (notFirst)
+				notifQuery += ", ";
+			notifQuery += "title=\"" + title + "\"" + "desc=\"" + desc + "\"";
+		}
+		notifQuery += " where notification_id=\"" + notification_id + "\"";
+
+		stmt.executeUpdate(taskQuery);
+		stmt.executeUpdate(notifQuery);
+
 		stmt.close();
 		con.close();
-	}*/
+	}
 
 	public void displayMessage(javax.servlet.jsp.JspWriter out, String message) throws Exception {
 		out.write("<div id=\"message\" class=\"modal-message\">");
@@ -376,28 +411,27 @@
 		Connection con = DriverManager
 				.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
-		ResultSet allNotes = stmt.executeQuery("select * from " + db + "." + relation + " JOIN " + db + "." + table
+		ResultSet allTasks = stmt.executeQuery("select * from " + db + "." + relation + " JOIN " + db + "." + table
 				+ " USING(task_id) WHERE account_id=\"" + account_id + "\"");
 
 		out.write("<script>");
 		out.write("$('#calendar').fullCalendar('removeEvents');"); //Refresh event list
 		out.write("var events=[];"); //Initialize list of events
 
-		if (allNotes.next() == true) { //Abort if query set is empty
+		if (allTasks.next() == true) { //Abort if query set is empty
 			//Collect events from database and Add event to list
-			while (!allNotes.isAfterLast()) {
-				String text = allNotes.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
+			while (!allTasks.isAfterLast()) {
+				String text = allTasks.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
 
-				out.write("events.push({id:" + allNotes.getInt(1) + ", title:'" + text + "', start:'"
-						+ allNotes.getString(4) + "T00:00:00', end:'" + allNotes.getString(5)
-						+ "T23:00:00', icon:'group'});");
-				allNotes.next();
+				out.write("events.push({id:" + allTasks.getInt(1) + ", title:'" + text + "', start:'"
+						+ allTasks.getString(5) + "T" + allTasks.getString(6) + "', icon:'group'});");
+				allTasks.next();
 			}
 			out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
 		}
 		out.write("</script>");
 
-		allNotes.close();
+		allTasks.close();
 		stmt.close();
 		con.close();
 	}%>

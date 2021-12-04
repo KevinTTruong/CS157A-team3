@@ -267,7 +267,7 @@
 		
 		String query = "update "+db+"."+table+" set ";
 		boolean notFirst = false;
-		if(!note_id.isEmpty()){
+		if(!note.isEmpty()){
 			query += "notes=\""+note+"\"";
 			notFirst=true;
 		}
