@@ -84,24 +84,22 @@
 								<input type="hidden" name="update" value="true" />
 								<div class="form-group">
 									<label>Task</label>
-									<textarea class="event-title form-control" name="task"
-										style="height: 200px;"></textarea>
+									<textarea class="event-title form-control" name="ename"></textarea>
 								</div>
 								<div class="form-group">
 									<label>Task Description</label>
-									<textarea class="form-control" name="edesc"></textarea>
+									<textarea class="event-title form-control" name="edesc" id="x-desc" style="height:200px;"></textarea>
 								</div>
 								<div class="form-group">
-									<label>Date (yyyy-mm-dd)</label> <input id="x-startdate"
+									<label>Date (yyyy-mm-dd)</label> <input id="x-start"
 										type='date' class="event-start form-control" name="edate">
 								</div>
 								<div class="form-group">
-									<label>Time (hh:mm:ss)</label> <input id="x-starttime" type='time'
+									<label>Time (hh:mm:ss)</label> <input id="x-time" type='time'
 										class="event-time form-control" name="etime">
 								</div>
 								<div class="form-group">
-									<label>Notification Type</label> <select class="form-control"
-										name="notif-type">
+									<label>Notification Type</label> <select id="x-notif" class="form-control" name="notif-type">
 										<option value="email">email</option>
 										<option value="text">text</option>
 									</select>
@@ -125,9 +123,9 @@
 						<form id="add-event">
 							<div class="modal-body">
 								<h4>Add Task</h4>
+								                  <input type="hidden" name="account_id" value=<%=account_id%> />	<!-- Save account_id on submit -->    
 								<div class="form-group">
-									<label>Task Name</label> <input type="text"
-										class="form-control" name="ename">
+									<label>Task Name</label> <textarea class="form-control" name="ename"></textarea>
 								</div>
 								<div class="form-group">
 									<label>Task Description</label>
@@ -195,7 +193,7 @@
 				} catch (Exception e) {
 					displayMessage(out, "Error: " + e.getMessage());
 				}
-			} else if ((taskName != null && taskDesc != null && date != null && time != null && taskNotif != null)
+			} else if (account_id != null && (taskName != null && taskDesc != null && date != null && time != null && taskNotif != null)
 					&& task_id == null) {
 				try {
 					addTask(account_id, taskName, taskDesc, date, time, taskNotif);
@@ -284,13 +282,11 @@
 		maxTaskId.next();
 		int task_id = maxTaskId.getInt(1) + 1;
 		maxTaskId.close();
-		System.out.println("task id is " + task_id);
 
-		ResultSet maxNotifyId = stmt.executeQuery("select max(task_id) from " + table);
+		ResultSet maxNotifyId = stmt.executeQuery("select max(notification_id) from " + notifyTable);
 		maxNotifyId.next();
 		int noti_id = maxNotifyId.getInt(1) + 1;
 		maxNotifyId.close();
-		System.out.println("nofif id is " + noti_id);
 
 		desc = desc.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
 		title = title.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
@@ -324,8 +320,9 @@
 		ResultSet getNotiId = stmt
 				.executeQuery("SELECT notification_id FROM " + db + "." + notifyRelation + " WHERE task_id=" + task_id);
 		getNotiId.next();
-		int noti_id = getNotiId.getInt(1) + 1;
+		int noti_id = getNotiId.getInt(1);
 		getNotiId.close();
+		
 
 		//SELECT notification_id FROM docket.set_notification WHERE task_id=5;
 		stmt.executeUpdate("delete from " + db + "." + relation + " where (account_id=" + account_id + ") and (task_id="
@@ -349,7 +346,7 @@
 		String taskQuery = "update " + db + "." + table + " set ";
 		boolean notFirst = false;
 		if (!task_id.isEmpty()) {
-			taskQuery += "title=\"" + title + "\"" + "desc=\"" + desc + "\"";
+			taskQuery += "title=\"" + title + "\"" + ", description=\"" + desc + "\"";
 			notFirst = true;
 		}
 		if (!date.isEmpty()) {
@@ -368,9 +365,8 @@
 		ResultSet notifId = stmt.executeQuery(
 				"select notification_id from " + db + "." + notifyRelation + " where task_id=\"" + task_id + "\"");
 		notifId.next();
-		int notification_id = notifId.getInt(1) + 1;
+		int notification_id = notifId.getInt(1);
 		notifId.close();
-		System.out.println("notification id is " + task_id);
 
 		String notifQuery = "update " + db + "." + notifyTable + " set ";
 		notFirst = false;
@@ -387,10 +383,10 @@
 		if (!notificationType.isEmpty()) {
 			if (notFirst)
 				notifQuery += ", ";
-			notifQuery += "title=\"" + title + "\"" + "desc=\"" + desc + "\"";
+			notifQuery += "type=\"" + notificationType + "\"";
 		}
 		notifQuery += " where notification_id=\"" + notification_id + "\"";
-
+		
 		stmt.executeUpdate(taskQuery);
 		stmt.executeUpdate(notifQuery);
 
@@ -411,8 +407,10 @@
 		Connection con = DriverManager
 				.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
+		Statement notifStmt = con.createStatement();
 		ResultSet allTasks = stmt.executeQuery("select * from " + db + "." + relation + " JOIN " + db + "." + table
 				+ " USING(task_id) WHERE account_id=\"" + account_id + "\"");
+	
 
 		out.write("<script>");
 		out.write("$('#calendar').fullCalendar('removeEvents');"); //Refresh event list
@@ -421,10 +419,15 @@
 		if (allTasks.next() == true) { //Abort if query set is empty
 			//Collect events from database and Add event to list
 			while (!allTasks.isAfterLast()) {
+				ResultSet getNotiType = notifStmt.executeQuery("select " + notifyTable + ".type from " + db + "." + notifyRelation + " JOIN " + db + "." + notifyTable
+						+ " USING(notification_id) WHERE task_id=\"" + allTasks.getString(1) + "\"");
+				getNotiType.next();
+				String notifType = getNotiType.getString(1);
+				getNotiType.close();
+				
 				String text = allTasks.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
-
 				out.write("events.push({id:" + allTasks.getInt(1) + ", title:'" + text + "', start:'"
-						+ allTasks.getString(5) + "T" + allTasks.getString(6) + "', icon:'group'});");
+						+ allTasks.getString(5) + "T" + allTasks.getString(6) + "', icon:'group', description: '" + allTasks.getString(4) + "', notification:'" + notifType + "'});");
 				allTasks.next();
 			}
 			out.write("$('#calendar').fullCalendar( 'addEventSource', events);");

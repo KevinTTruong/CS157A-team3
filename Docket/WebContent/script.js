@@ -88,13 +88,21 @@ jQuery('#calendar').fullCalendar({
           }
           jQuery('.event-id').html(event.id);
           jQuery('.eventUrl').attr('href',event.url);
-          
-          
           jQuery('#modal-view-event').modal();          
           
           document.getElementById("x-id").value=jQuery("#event-id").text();
+          document.getElementById("x-desc").value=event.description;
           document.getElementById("x-start").value=event.start.format("YYYY-MM-DD").toString();
-          document.getElementById("x-end").value=event.end.format("YYYY-MM-DD").toString();
+          document.getElementById("x-time").value=event.start.format("HH:mm:ss").toString();
+          if(event.end!=undefined){
+        	  document.getElementById("x-end").value=event.end.format("YYYY-MM-DD").toString();
+          }
+
+          if(event.notification.toLowerCase() === "email"){
+        	  document.getElementById("x-notif").selectedIndex="0";
+          } else {
+	 document.getElementById("x-notif").selectedIndex="1";
+}
       }
 });
 

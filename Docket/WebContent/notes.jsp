@@ -310,7 +310,7 @@
 				//Collect events from database and Add event to list
 				while(!allNotes.isAfterLast()){
 					String text = allNotes.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
-					
+					System.out.println("events.push({id:"+allNotes.getInt(1)+", title:'"+text+"', start:'"+allNotes.getString(4)+"T00:00:00', end:'"+allNotes.getString(5)+"T23:00:00', icon:'group'});");
 					out.write("events.push({id:"+allNotes.getInt(1)+", title:'"+text+"', start:'"+allNotes.getString(4)+"T00:00:00', end:'"+allNotes.getString(5)+"T23:00:00', icon:'group'});");	
 					allNotes.next();
 				}
