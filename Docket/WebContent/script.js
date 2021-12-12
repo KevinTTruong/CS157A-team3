@@ -81,14 +81,16 @@ jQuery('#calendar').fullCalendar({
       eventClick: function(event, jsEvent, view) {
           jQuery('.event-icon').html("<i class='fa fa-"+event.icon+"'></i>");
     	  jQuery('.event-title').html(event.title);
-          jQuery('.event-desc').html(event.description);
           jQuery('.event-start').html(event.start.format("YYYY-MM-DD").toString());
+          jQuery('.event-id').html(event.id);
+          jQuery('.eventUrl').attr('href',event.url);
           if(event.end!=undefined){
         	  //Is a note or goal
         	  jQuery('.event-end').html(event.end.format("YYYY-MM-DD").toString());
           }else{
         	  //Is a task
         	  jQuery('.event-tags').html(event.extendedProp.tags);
+              jQuery('.event-desc').html(event.description);
         	  
         	  //Remove tag render in title's input
         	  var tags = event.extendedProp.tags.split(" ");
@@ -105,25 +107,26 @@ jQuery('#calendar').fullCalendar({
           		  jQuery('.event-title-modified').html(event.title.substring(tagResult.length+1));
           	  }
           }
-          jQuery('.event-id').html(event.id);
-          jQuery('.eventUrl').attr('href',event.url);
           jQuery('#modal-view-event').modal();          
           
           document.getElementById("x-id").value=jQuery("#event-id").text();
-          document.getElementById("x-desc").value=event.description;
           document.getElementById("x-start").value=event.start.format("YYYY-MM-DD").toString();
-          document.getElementById("x-time").value=event.start.format("HH:mm:ss").toString();
           if(event.end!=undefined){
+        	  //Is a note or goal
         	  document.getElementById("x-end").value=event.end.format("YYYY-MM-DD").toString();
           }else{
+        	  //Is a task
         	  document.getElementById("x-tags").value=event.extendedProp.tags;
+        	  document.getElementById("x-desc").value=event.description;
+              document.getElementById("x-time").value=event.start.format("HH:mm:ss").toString();
+              if(event.notification.toLowerCase() === "email"){
+            	  document.getElementById("x-notif").selectedIndex="0";
+              } else {
+            	  document.getElementById("x-notif").selectedIndex="1";
+              }
           }
 
-          if(event.notification.toLowerCase() === "email"){
-        	  document.getElementById("x-notif").selectedIndex="0";
-          } else {
-	 document.getElementById("x-notif").selectedIndex="1";
-}
+          
       }
 });
 
