@@ -1,5 +1,5 @@
 <%@ page import="java.sql.*" import="java.text.SimpleDateFormat"
-	import="java.util.Date"%>
+	import="java.util.Date" import="java.util.ArrayList"%>
 
 <style>
 	.modal-message {
@@ -75,6 +75,7 @@
 							<div class="modal-body">
 								<h4 class="modal-title">
 									<span class="event-icon"></span>
+									<span class="tag-display"></span>
 									<span class="event-title"></span>
                     				<span id="event-id" class="event-id" style="display:none"></span>
                     				<span id="event-time" class="event-time" style="display:none"></span>
@@ -84,7 +85,7 @@
 								<input type="hidden" name="update" value="true" />
 								<div class="form-group">
 									<label>Task</label>
-									<textarea class="event-title form-control" name="ename"></textarea>
+									<textarea class="event-title-modified form-control" name="ename"></textarea>
 								</div>
 								<div class="form-group">
 									<label>Task Description</label>
@@ -103,6 +104,10 @@
 										<option value="email">email</option>
 										<option value="text">text</option>
 									</select>
+								</div>
+								<div class="form-group">
+									<label>Tags (separate with spaces)</label>
+									<input class="event-tags form-control" name="tags" id="x-tags">
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -164,6 +169,10 @@
 										<option value="text">text</option>
 									</select>
 								</div>
+								<div class="form-group">
+									<label>Tags (separate with spaces)</label> <input class="form-control"
+										name="tags">
+								</div>
 							</div>
 							<div class="modal-footer">
 								<button type="submit" class="btn btn-primary">Save</button>
@@ -183,12 +192,13 @@
 			String taskNotif = request.getParameter("notif-type");
 			String update = request.getParameter("update");
 			String task_id = request.getParameter("event_id");
+			String tags = request.getParameter("tags");
 
 			//String account_id, String title, String desc, String date, String time, String notificationType
 
 			if (update != null && update.equals("true")) {
 				try {
-					updateTask(task_id, taskName, taskDesc, date, time, taskNotif);
+					updateTask(out, task_id, taskName, taskDesc, date, time, taskNotif, tags);
 					displayMessage(out, "Task updated!");
 				} catch (Exception e) {
 					displayMessage(out, "Error: " + e.getMessage());
@@ -196,7 +206,7 @@
 			} else if (account_id != null && (taskName != null && taskDesc != null && date != null && time != null && taskNotif != null)
 					&& task_id == null) {
 				try {
-					addTask(account_id, taskName, taskDesc, date, time, taskNotif);
+					addTask(account_id, taskName, taskDesc, date, time, taskNotif, tags);
 					displayMessage(out, "Task added!");
 				} catch (Exception e) {
 					//MysqlDataTruncation = incorrect date format
@@ -267,8 +277,10 @@
 	String relation = "create_task";
 	String notifyTable = "notification";
 	String notifyRelation = "set_notification";
+	String tagTable = "tag";
+	String tagRelation = "tagged";
 
-	public void addTask(String account_id, String title, String desc, String date, String time, String notificationType)
+	public void addTask(String account_id, String title, String desc, String date, String time, String notificationType, String tags)
 			throws Exception {
 		if (desc.isEmpty() || desc == null)
 			desc = "";
@@ -283,23 +295,39 @@
 		int task_id = maxTaskId.getInt(1) + 1;
 		maxTaskId.close();
 
-		ResultSet maxNotifyId = stmt.executeQuery("select max(notification_id) from " + notifyTable);
-		maxNotifyId.next();
-		int noti_id = maxNotifyId.getInt(1) + 1;
-		maxNotifyId.close();
-
 		desc = desc.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
 		title = title.replace("\n", " ").replace("\'", "\\\'").replace("\"", "\\\"");
 
+		//Insert task to db
 		stmt.executeUpdate("insert into " + db + "." + table + " (task_id, title, description, date, time) VALUES (\""
 				+ task_id + "\", \"" + title + "\", \"" + desc + "\", \"" + date + "\", \"" + time + "\")");
 		stmt.executeUpdate("insert into " + db + "." + relation + " (account_id, task_id) values (" + account_id + ", "
 				+ task_id + ")");
+		
+		//Insert notification to db
+		ResultSet maxNotifyId = stmt.executeQuery("select max(notification_id) from " + notifyTable);
+		maxNotifyId.next();
+		int noti_id = maxNotifyId.getInt(1) + 1;
+		maxNotifyId.close();
+		
 		stmt.executeUpdate("insert into " + db + "." + notifyTable + " (notification_id, date, time, type) VALUES (\""
 				+ noti_id + "\", \"" + date + "\", \"" + time + "\", \"" + notificationType + "\")");
 		stmt.executeUpdate("insert into " + db + "." + notifyRelation + " (task_id, notification_id) values (" + task_id
 				+ ", " + noti_id + ")");
+		
+		//Insert of tags to db
+		ResultSet maxTagId = stmt.executeQuery("select max(tag_id) from "+db+"."+tagTable);
+		maxTagId.next();
+		int tag_id = maxTagId.getInt(1) + 1;
+		maxTagId.close();		
 
+		for(String tag : tags.split(" ")){
+			if(!tag.isEmpty()){
+				stmt.executeUpdate("insert into "+db+"."+tagTable+" (tag_id, label) values ("+tag_id+", '"+tag+"')");
+				stmt.executeUpdate("insert into "+db+"."+tagRelation+" (task_id, tag_id) values ("+task_id+", "+tag_id+")");
+				tag_id++;
+			}
+		}
 		stmt.close();
 		con.close();
 	}
@@ -324,25 +352,27 @@
 		getNotiId.close();
 		
 
-		//SELECT notification_id FROM docket.set_notification WHERE task_id=5;
 		stmt.executeUpdate("delete from " + db + "." + relation + " where (account_id=" + account_id + ") and (task_id="
 				+ task_id + ")");
 		stmt.executeUpdate("delete from " + db + "." + notifyRelation + " where (notification_id=" + noti_id
 				+ ") and (task_id=" + task_id + ")");
 		stmt.executeUpdate("delete from " + db + "." + table + " where (task_id=\"" + task_id + "\")");
 		stmt.executeUpdate("delete from " + db + "." + notifyTable + " where (notification_id=\"" + noti_id + "\")");
-
+		stmt.executeUpdate("delete from "+db+"."+tagTable+" where tag_id in (SELECT tag_id FROM "+db+"."+tagRelation+" where task_id="+task_id+")");
+		stmt.executeUpdate("delete from "+db+"."+tagRelation+" where task_id="+task_id);
+		
 		verifyAccess.close();
 		stmt.close();
 		con.close();
 	}
 
-	public void updateTask(String task_id, String title, String desc, String date, String time, String notificationType)
+	public void updateTask(javax.servlet.jsp.JspWriter out, String task_id, String title, String desc, String date, String time, String notificationType, String tags)
 			throws Exception {
 		Connection con = DriverManager
 				.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
-
+	
+		//Update task
 		String taskQuery = "update " + db + "." + table + " set ";
 		boolean notFirst = false;
 		if (!task_id.isEmpty()) {
@@ -359,9 +389,12 @@
 			if (notFirst)
 				taskQuery += ", ";
 			taskQuery += "time=\"" + time + "\"";
+			notFirst = true;
 		}
 		taskQuery += " where task_id=\"" + task_id + "\"";
+		if(notFirst) stmt.executeUpdate(taskQuery);
 
+		//Update notification
 		ResultSet notifId = stmt.executeQuery(
 				"select notification_id from " + db + "." + notifyRelation + " where task_id=\"" + task_id + "\"");
 		notifId.next();
@@ -384,12 +417,50 @@
 			if (notFirst)
 				notifQuery += ", ";
 			notifQuery += "type=\"" + notificationType + "\"";
+			notFirst = true;
 		}
 		notifQuery += " where notification_id=\"" + notification_id + "\"";
+		if(notFirst) stmt.executeUpdate(notifQuery);
 		
-		stmt.executeUpdate(taskQuery);
-		stmt.executeUpdate(notifQuery);
-
+		//Update tag
+		ResultSet maxTagId = stmt.executeQuery("select max(tag_id) from " + db+"."+tagTable);
+		maxTagId.next();
+		int tag_id = maxTagId.getInt(1) + 1;
+		maxTagId.close();
+		
+		//Retrieve list of tags in db
+		ArrayList<String> retrievedTags = new ArrayList<String>();
+		ResultSet dbTags = stmt.executeQuery("select label from "+db+"."+tagRelation+" join "+db+"."+tagTable+" using (tag_id) where task_id="+task_id);
+		if(dbTags.next() == true){
+			while (!dbTags.isAfterLast()) {
+				retrievedTags.add(dbTags.getString(1));
+				dbTags.next();
+			}
+		}
+		dbTags.close();
+		
+		for(String tag : tags.split(" ")){
+			//Check if tag exists
+			if(retrievedTags.contains(tag)){
+				retrievedTags.remove(tag);
+			}else if(!tag.isEmpty() && !tag.equals(" ")){//Insert new tag
+				stmt.executeUpdate("insert into "+db+"."+tagTable+" (tag_id, label) values ("+tag_id+", '"+tag+"')");
+				stmt.executeUpdate("insert into "+db+"."+tagRelation+" (task_id, tag_id) values ("+task_id+", "+tag_id+")");
+				tag_id++;
+			}
+		}
+		//Remove deleted tags (the tags left in retrievedTags)
+		if(!retrievedTags.isEmpty()){
+			for(String tag : retrievedTags){
+				ResultSet delTag = stmt.executeQuery("select tag_id from "+db+"."+tagRelation+" join "+db+"."+tagTable+" using (tag_id) where task_id="+task_id+" and label='"+tag+"'");
+				delTag.next();
+				int subqueryId = delTag.getInt(1);
+				delTag.close();
+				
+				stmt.executeUpdate("delete from "+db+"."+tagRelation+" where tag_id=("+subqueryId+")");
+				stmt.executeUpdate("delete from "+db+"."+tagTable+" where tag_id=("+subqueryId+")");
+			}
+		}
 		stmt.close();
 		con.close();
 	}
@@ -408,9 +479,9 @@
 				.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
 		Statement notifStmt = con.createStatement();
+		Statement tagStmt = con.createStatement();
 		ResultSet allTasks = stmt.executeQuery("select * from " + db + "." + relation + " JOIN " + db + "." + table
 				+ " USING(task_id) WHERE account_id=\"" + account_id + "\"");
-	
 
 		out.write("<script>");
 		out.write("$('#calendar').fullCalendar('removeEvents');"); //Refresh event list
@@ -419,15 +490,40 @@
 		if (allTasks.next() == true) { //Abort if query set is empty
 			//Collect events from database and Add event to list
 			while (!allTasks.isAfterLast()) {
+				//Get notification
 				ResultSet getNotiType = notifStmt.executeQuery("select " + notifyTable + ".type from " + db + "." + notifyRelation + " JOIN " + db + "." + notifyTable
 						+ " USING(notification_id) WHERE task_id=\"" + allTasks.getString(1) + "\"");
 				getNotiType.next();
 				String notifType = getNotiType.getString(1);
 				getNotiType.close();
 				
-				String text = allTasks.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
-				out.write("events.push({id:" + allTasks.getInt(1) + ", title:'" + text + "', start:'"
-						+ allTasks.getString(5) + "T" + allTasks.getString(6) + "', icon:'group', description: '" + allTasks.getString(4) + "', notification:'" + notifType + "'});");
+				//Get tasks
+				String tags = "";
+				ResultSet getTags = tagStmt.executeQuery("select label from "+db+"."+tagRelation+" join "+db+"."+tagTable+" using (tag_id) where task_id="+allTasks.getInt(1));
+				if(getTags.next() == true){
+					while(!getTags.isAfterLast()){
+						tags += getTags.getString(1)+" ";
+						getTags.next();
+					}
+				}
+				getTags.close();
+				
+				//Adjust texts
+				String title = "";
+				for(String tag: tags.split(" ")){
+					if(!tag.isEmpty()){
+						title += "["+tag+"] ";
+					}
+				}
+				title += allTasks.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
+				
+				String desc = allTasks.getString(4).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
+				
+				//Add to events in FullCalendar
+				out.write("events.push({id:" + allTasks.getInt(1) + ", title:'" + title + "', start:'"
+						+ allTasks.getString(5) + "T" + allTasks.getString(6) + "', icon:'group', description: '" + desc 
+						+ "', notification:'" + notifType + "', extendedProp: {'tags': '"+tags+"'}});");
+				
 				allTasks.next();
 			}
 			out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
@@ -435,6 +531,8 @@
 		out.write("</script>");
 
 		allTasks.close();
+		tagStmt.close();
+		notifStmt.close();
 		stmt.close();
 		con.close();
 	}%>

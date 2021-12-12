@@ -80,11 +80,30 @@ jQuery('#calendar').fullCalendar({
         },
       eventClick: function(event, jsEvent, view) {
           jQuery('.event-icon').html("<i class='fa fa-"+event.icon+"'></i>");
-          jQuery('.event-title').html(event.title);
+    	  jQuery('.event-title').html(event.title);
           jQuery('.event-desc').html(event.description);
           jQuery('.event-start').html(event.start.format("YYYY-MM-DD").toString());
           if(event.end!=undefined){
+        	  //Is a note or goal
         	  jQuery('.event-end').html(event.end.format("YYYY-MM-DD").toString());
+          }else{
+        	  //Is a task
+        	  jQuery('.event-tags').html(event.extendedProp.tags);
+        	  
+        	  //Remove tag render in title's input
+        	  var tags = event.extendedProp.tags.split(" ");
+	  		  tagResult = "";
+	  		  for(let i=0;i<tags.length-1;i++){
+	  			if(!(tags[i] === "")){
+	  				tagResult += "["+tags[i]+"]";
+	  			}
+	  		  }
+	  		  
+		  	  if(tagResult === ""){
+		  		  jQuery('.event-title-modified').html(event.title);
+          	  }else{
+          		  jQuery('.event-title-modified').html(event.title.substring(tagResult.length+1));
+          	  }
           }
           jQuery('.event-id').html(event.id);
           jQuery('.eventUrl').attr('href',event.url);
@@ -96,6 +115,8 @@ jQuery('#calendar').fullCalendar({
           document.getElementById("x-time").value=event.start.format("HH:mm:ss").toString();
           if(event.end!=undefined){
         	  document.getElementById("x-end").value=event.end.format("YYYY-MM-DD").toString();
+          }else{
+        	  document.getElementById("x-tags").value=event.extendedProp.tags;
           }
 
           if(event.notification.toLowerCase() === "email"){
