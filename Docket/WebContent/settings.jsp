@@ -131,7 +131,7 @@
 		</div>
 		<div class="form-group">
 			<label>Enter Current Password to Save Changes</label> 
-			<input type="text" class="form-control" name="password" />
+			<input type="password" class="form-control" name="password" />
 		</div>
 	</div>
 	<div class="modal-footer">

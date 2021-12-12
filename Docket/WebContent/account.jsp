@@ -53,7 +53,7 @@
 						name="email" required>
 				</div>
 				<div class="form-group">
-					<label>Password</label> <input type="text" class="form-control"
+					<label>Password</label> <input type="password" class="form-control"
 						name="password" required>
 				</div>
 			</div>
@@ -83,7 +83,7 @@
 									name="email" required />
 							</div>
 							<div class="form-group">
-								<label>Password</label> <input type="text" class="form-control"
+								<label>Password</label> <input type="password" class="form-control"
 									name="password" required />
 							</div>
 							<div class="form-group">

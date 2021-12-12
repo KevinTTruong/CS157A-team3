@@ -142,6 +142,24 @@
 					</div>
 				</div>
 			</div>
+			
+						<!-- Create logout modal -->
+			<div class="modal fade" id="logout">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+
+						<div class="modal-body">
+							<h4>Are you sure you want to log out?</h4>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary"
+									onclick="location.href='account.jsp'">Log out</button>
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<%
 			String goal = request.getParameter("goal");
@@ -207,9 +225,12 @@
 			<i class="menu__icon fa fa-envelope"></i> <span class="menu__text">notes</span>
 		</a> <a class="menu__item menu__item--active"
 			href="tasks.jsp?account_id=<%=account_id%>"> <i
-			class="menu__icon fa fa-calendar"></i> <span class="menu__text">calendar</span>
+			class="menu__icon fa fa-calendar"></i> <span class="menu__text">tasks</span>
 		</a> <a class="menu__item" href="settings.jsp?account_id=<%=account_id%>">
 			<i class="menu__icon fa fa-sliders"></i> <span class="menu__text">settings</span>
+		</a> <a class="menu__item" href="#logout" data-toggle="modal"
+			data-target="#logout"> <i class="menu__icon fa fa-sign-out"></i>
+			<span class="menu__text">log out</span>
 		</a>
 	</nav>
 	<div class="copyright">Docket &copy; 2021</div>

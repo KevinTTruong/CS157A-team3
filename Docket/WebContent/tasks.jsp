@@ -2,25 +2,25 @@
 	import="java.util.Date" import="java.util.ArrayList"%>
 
 <style>
-	.modal-message {
-	  display: none;
-	  position: fixed;
-	  z-index: 1;
-	  left: 0;
-	  top: 0;
-	  width: 100%;
-	  height: 100%;
-	  background-color: rgba(0,0,0,0.4);
-	}
-	
-	/* Modal Content */
-	.modal-message-content {
-	  background-color: #fefefe;
-	  margin: auto;
-	  padding: 100px;
-	  border: 1px solid #888;
-	  width: 80%;
-	}
+.modal-message {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Content */
+.modal-message-content {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 100px;
+	border: 1px solid #888;
+	width: 80%;
+}
 </style>
 
 <html>
@@ -39,6 +39,9 @@
 				window.location.assign(url.substring(0, url.indexOf('&'))
 						+ '&event_id=' + jQuery('#event-id').text());
 			}
+		}
+
+		function logout() {
 		}
 	</script>
 	<meta charset="UTF-8">
@@ -68,28 +71,31 @@
 			</div>
 
 			<!-- View task -->
-			<div id="modal-view-event" class="modal modal-top fade calendar-modal">
+			<div id="modal-view-event"
+				class="modal modal-top fade calendar-modal">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<form id="modifytask">
 							<div class="modal-body">
 								<h4 class="modal-title">
-									<span class="event-icon"></span>
-									<span class="tag-display"></span>
-									<span class="event-title"></span>
-                    				<span id="event-id" class="event-id" style="display:none"></span>
-                    				<span id="event-time" class="event-time" style="display:none"></span>
+									<span class="event-icon"></span> <span class="tag-display"></span>
+									<span class="event-title"></span> <span id="event-id"
+										class="event-id" style="display: none"></span> <span
+										id="event-time" class="event-time" style="display: none"></span>
 								</h4>
-								<input type="hidden" name="account_id" value=<%=account_id%> /> <!-- Save account_id on submit -->
-								<input type="hidden" name="event_id" id="x-id" />
-								<input type="hidden" name="update" value="true" />
+								<input type="hidden" name="account_id" value=<%=account_id%> />
+								<!-- Save account_id on submit -->
+								<input type="hidden" name="event_id" id="x-id" /> <input
+									type="hidden" name="update" value="true" />
 								<div class="form-group">
 									<label>Task</label>
-									<textarea class="event-title-modified form-control" name="ename"></textarea>
+									<textarea class="event-title-modified form-control"
+										name="ename"></textarea>
 								</div>
 								<div class="form-group">
 									<label>Task Description</label>
-									<textarea class="event-title form-control" name="edesc" id="x-desc" style="height:200px;"></textarea>
+									<textarea class="event-title form-control" name="edesc"
+										id="x-desc" style="height: 200px;"></textarea>
 								</div>
 								<div class="form-group">
 									<label>Date (yyyy-mm-dd)</label> <input id="x-start"
@@ -100,14 +106,15 @@
 										class="event-time form-control" name="etime">
 								</div>
 								<div class="form-group">
-									<label>Notification Type</label> <select id="x-notif" class="form-control" name="notif-type">
+									<label>Notification Type</label> <select id="x-notif"
+										class="form-control" name="notif-type">
 										<option value="email">email</option>
 										<option value="text">text</option>
 									</select>
 								</div>
 								<div class="form-group">
-									<label>Tags (separate with spaces)</label>
-									<input class="event-tags form-control" name="tags" id="x-tags">
+									<label>Tags (separate with spaces)</label> <input
+										class="event-tags form-control" name="tags" id="x-tags">
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -122,23 +129,26 @@
 			</div>
 
 			<!-- Add task -->
-			<div id="modal-view-event-add" class="modal modal-top fade calendar-modal">
+			<div id="modal-view-event-add"
+				class="modal modal-top fade calendar-modal">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<form id="add-event">
 							<div class="modal-body">
 								<h4>Add Task</h4>
-								                  <input type="hidden" name="account_id" value=<%=account_id%> />	<!-- Save account_id on submit -->    
+								<input type="hidden" name="account_id" value=<%=account_id%> />
+								<!-- Save account_id on submit -->
 								<div class="form-group">
-									<label>Task Name</label> <textarea class="form-control" name="ename"></textarea>
+									<label>Task Name</label>
+									<textarea class="form-control" name="ename"></textarea>
 								</div>
 								<div class="form-group">
 									<label>Task Description</label>
 									<textarea class="form-control" name="edesc"></textarea>
 								</div>
 								<div class="form-group">
-									<label>Date (yyyy-mm-dd)</label> <input
-										type='date' class="form-control" name="edate">
+									<label>Date (yyyy-mm-dd)</label> <input type='date'
+										class="form-control" name="edate">
 								</div>
 								<div class="form-group">
 									<label>Time (hh:mm:ss)</label> <input type='time'
@@ -170,8 +180,8 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label>Tags (separate with spaces)</label> <input class="form-control"
-										name="tags">
+									<label>Tags (separate with spaces)</label> <input
+										class="form-control" name="tags">
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -183,6 +193,25 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Create logout modal -->
+			<div class="modal fade" id="logout">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+
+						<div class="modal-body">
+							<h4>Are you sure you want to log out?</h4>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary"
+									onclick="location.href='account.jsp'">Log out</button>
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 
 			<%
 			String taskName = request.getParameter("ename");
@@ -203,7 +232,8 @@
 				} catch (Exception e) {
 					displayMessage(out, "Error: " + e.getMessage());
 				}
-			} else if (account_id != null && (taskName != null && taskDesc != null && date != null && time != null && taskNotif != null)
+			} else if (account_id != null
+					&& (taskName != null && taskDesc != null && date != null && time != null && taskNotif != null)
 					&& task_id == null) {
 				try {
 					addTask(account_id, taskName, taskDesc, date, time, taskNotif, tags);
@@ -225,7 +255,6 @@
 		</div>
 	</body>
 
-
 	<sidebar>
 	<div class="avatar">
 		<div class="avatar__img">
@@ -240,10 +269,14 @@
 			<i class="menu__icon fa fa-envelope"></i> <span class="menu__text">notes</span>
 		</a> <a class="menu__item menu__item--active"
 			href="tasks.jsp?account_id=<%=account_id%>"> <i
-			class="menu__icon fa fa-calendar"></i> <span class="menu__text">calendar</span>
+			class="menu__icon fa fa-calendar"></i> <span class="menu__text">tasks</span>
 		</a> <a class="menu__item" href="settings.jsp?account_id=<%=account_id%>">
 			<i class="menu__icon fa fa-sliders"></i> <span class="menu__text">settings</span>
+		</a> <a class="menu__item" href="#logout" data-toggle="modal"
+			data-target="#logout"> <i class="menu__icon fa fa-sign-out"></i>
+			<span class="menu__text">log out</span>
 		</a>
+
 	</nav>
 	<div class="copyright">Docket &copy; 2021</div>
 	</sidebar>
@@ -280,8 +313,8 @@
 	String tagTable = "tag";
 	String tagRelation = "tagged";
 
-	public void addTask(String account_id, String title, String desc, String date, String time, String notificationType, String tags)
-			throws Exception {
+	public void addTask(String account_id, String title, String desc, String date, String time, String notificationType,
+			String tags) throws Exception {
 		if (desc.isEmpty() || desc == null)
 			desc = "";
 
@@ -303,28 +336,30 @@
 				+ task_id + "\", \"" + title + "\", \"" + desc + "\", \"" + date + "\", \"" + time + "\")");
 		stmt.executeUpdate("insert into " + db + "." + relation + " (account_id, task_id) values (" + account_id + ", "
 				+ task_id + ")");
-		
+
 		//Insert notification to db
 		ResultSet maxNotifyId = stmt.executeQuery("select max(notification_id) from " + notifyTable);
 		maxNotifyId.next();
 		int noti_id = maxNotifyId.getInt(1) + 1;
 		maxNotifyId.close();
-		
+
 		stmt.executeUpdate("insert into " + db + "." + notifyTable + " (notification_id, date, time, type) VALUES (\""
 				+ noti_id + "\", \"" + date + "\", \"" + time + "\", \"" + notificationType + "\")");
 		stmt.executeUpdate("insert into " + db + "." + notifyRelation + " (task_id, notification_id) values (" + task_id
 				+ ", " + noti_id + ")");
-		
+
 		//Insert of tags to db
-		ResultSet maxTagId = stmt.executeQuery("select max(tag_id) from "+db+"."+tagTable);
+		ResultSet maxTagId = stmt.executeQuery("select max(tag_id) from " + db + "." + tagTable);
 		maxTagId.next();
 		int tag_id = maxTagId.getInt(1) + 1;
-		maxTagId.close();		
+		maxTagId.close();
 
-		for(String tag : tags.split(" ")){
-			if(!tag.isEmpty()){
-				stmt.executeUpdate("insert into "+db+"."+tagTable+" (tag_id, label) values ("+tag_id+", '"+tag+"')");
-				stmt.executeUpdate("insert into "+db+"."+tagRelation+" (task_id, tag_id) values ("+task_id+", "+tag_id+")");
+		for (String tag : tags.split(" ")) {
+			if (!tag.isEmpty()) {
+				stmt.executeUpdate("insert into " + db + "." + tagTable + " (tag_id, label) values (" + tag_id + ", '"
+						+ tag + "')");
+				stmt.executeUpdate("insert into " + db + "." + tagRelation + " (task_id, tag_id) values (" + task_id
+						+ ", " + tag_id + ")");
 				tag_id++;
 			}
 		}
@@ -350,7 +385,6 @@
 		getNotiId.next();
 		int noti_id = getNotiId.getInt(1);
 		getNotiId.close();
-		
 
 		stmt.executeUpdate("delete from " + db + "." + relation + " where (account_id=" + account_id + ") and (task_id="
 				+ task_id + ")");
@@ -358,20 +392,21 @@
 				+ ") and (task_id=" + task_id + ")");
 		stmt.executeUpdate("delete from " + db + "." + table + " where (task_id=\"" + task_id + "\")");
 		stmt.executeUpdate("delete from " + db + "." + notifyTable + " where (notification_id=\"" + noti_id + "\")");
-		stmt.executeUpdate("delete from "+db+"."+tagTable+" where tag_id in (SELECT tag_id FROM "+db+"."+tagRelation+" where task_id="+task_id+")");
-		stmt.executeUpdate("delete from "+db+"."+tagRelation+" where task_id="+task_id);
-		
+		stmt.executeUpdate("delete from " + db + "." + tagTable + " where tag_id in (SELECT tag_id FROM " + db + "."
+				+ tagRelation + " where task_id=" + task_id + ")");
+		stmt.executeUpdate("delete from " + db + "." + tagRelation + " where task_id=" + task_id);
+
 		verifyAccess.close();
 		stmt.close();
 		con.close();
 	}
 
-	public void updateTask(javax.servlet.jsp.JspWriter out, String task_id, String title, String desc, String date, String time, String notificationType, String tags)
-			throws Exception {
+	public void updateTask(javax.servlet.jsp.JspWriter out, String task_id, String title, String desc, String date,
+			String time, String notificationType, String tags) throws Exception {
 		Connection con = DriverManager
 				.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
-	
+
 		//Update task
 		String taskQuery = "update " + db + "." + table + " set ";
 		boolean notFirst = false;
@@ -392,7 +427,8 @@
 			notFirst = true;
 		}
 		taskQuery += " where task_id=\"" + task_id + "\"";
-		if(notFirst) stmt.executeUpdate(taskQuery);
+		if (notFirst)
+			stmt.executeUpdate(taskQuery);
 
 		//Update notification
 		ResultSet notifId = stmt.executeQuery(
@@ -420,45 +456,50 @@
 			notFirst = true;
 		}
 		notifQuery += " where notification_id=\"" + notification_id + "\"";
-		if(notFirst) stmt.executeUpdate(notifQuery);
-		
+		if (notFirst)
+			stmt.executeUpdate(notifQuery);
+
 		//Update tag
-		ResultSet maxTagId = stmt.executeQuery("select max(tag_id) from " + db+"."+tagTable);
+		ResultSet maxTagId = stmt.executeQuery("select max(tag_id) from " + db + "." + tagTable);
 		maxTagId.next();
 		int tag_id = maxTagId.getInt(1) + 1;
 		maxTagId.close();
-		
+
 		//Retrieve list of tags in db
 		ArrayList<String> retrievedTags = new ArrayList<String>();
-		ResultSet dbTags = stmt.executeQuery("select label from "+db+"."+tagRelation+" join "+db+"."+tagTable+" using (tag_id) where task_id="+task_id);
-		if(dbTags.next() == true){
+		ResultSet dbTags = stmt.executeQuery("select label from " + db + "." + tagRelation + " join " + db + "."
+				+ tagTable + " using (tag_id) where task_id=" + task_id);
+		if (dbTags.next() == true) {
 			while (!dbTags.isAfterLast()) {
 				retrievedTags.add(dbTags.getString(1));
 				dbTags.next();
 			}
 		}
 		dbTags.close();
-		
-		for(String tag : tags.split(" ")){
+
+		for (String tag : tags.split(" ")) {
 			//Check if tag exists
-			if(retrievedTags.contains(tag)){
+			if (retrievedTags.contains(tag)) {
 				retrievedTags.remove(tag);
-			}else if(!tag.isEmpty() && !tag.equals(" ")){//Insert new tag
-				stmt.executeUpdate("insert into "+db+"."+tagTable+" (tag_id, label) values ("+tag_id+", '"+tag+"')");
-				stmt.executeUpdate("insert into "+db+"."+tagRelation+" (task_id, tag_id) values ("+task_id+", "+tag_id+")");
+			} else if (!tag.isEmpty() && !tag.equals(" ")) {//Insert new tag
+				stmt.executeUpdate("insert into " + db + "." + tagTable + " (tag_id, label) values (" + tag_id + ", '"
+						+ tag + "')");
+				stmt.executeUpdate("insert into " + db + "." + tagRelation + " (task_id, tag_id) values (" + task_id
+						+ ", " + tag_id + ")");
 				tag_id++;
 			}
 		}
 		//Remove deleted tags (the tags left in retrievedTags)
-		if(!retrievedTags.isEmpty()){
-			for(String tag : retrievedTags){
-				ResultSet delTag = stmt.executeQuery("select tag_id from "+db+"."+tagRelation+" join "+db+"."+tagTable+" using (tag_id) where task_id="+task_id+" and label='"+tag+"'");
+		if (!retrievedTags.isEmpty()) {
+			for (String tag : retrievedTags) {
+				ResultSet delTag = stmt.executeQuery("select tag_id from " + db + "." + tagRelation + " join " + db
+						+ "." + tagTable + " using (tag_id) where task_id=" + task_id + " and label='" + tag + "'");
 				delTag.next();
 				int subqueryId = delTag.getInt(1);
 				delTag.close();
-				
-				stmt.executeUpdate("delete from "+db+"."+tagRelation+" where tag_id=("+subqueryId+")");
-				stmt.executeUpdate("delete from "+db+"."+tagTable+" where tag_id=("+subqueryId+")");
+
+				stmt.executeUpdate("delete from " + db + "." + tagRelation + " where tag_id=(" + subqueryId + ")");
+				stmt.executeUpdate("delete from " + db + "." + tagTable + " where tag_id=(" + subqueryId + ")");
 			}
 		}
 		stmt.close();
@@ -491,39 +532,41 @@
 			//Collect events from database and Add event to list
 			while (!allTasks.isAfterLast()) {
 				//Get notification
-				ResultSet getNotiType = notifStmt.executeQuery("select " + notifyTable + ".type from " + db + "." + notifyRelation + " JOIN " + db + "." + notifyTable
+				ResultSet getNotiType = notifStmt.executeQuery("select " + notifyTable + ".type from " + db + "."
+						+ notifyRelation + " JOIN " + db + "." + notifyTable
 						+ " USING(notification_id) WHERE task_id=\"" + allTasks.getString(1) + "\"");
 				getNotiType.next();
 				String notifType = getNotiType.getString(1);
 				getNotiType.close();
-				
+
 				//Get tasks
 				String tags = "";
-				ResultSet getTags = tagStmt.executeQuery("select label from "+db+"."+tagRelation+" join "+db+"."+tagTable+" using (tag_id) where task_id="+allTasks.getInt(1));
-				if(getTags.next() == true){
-					while(!getTags.isAfterLast()){
-						tags += getTags.getString(1)+" ";
+				ResultSet getTags = tagStmt.executeQuery("select label from " + db + "." + tagRelation + " join " + db
+						+ "." + tagTable + " using (tag_id) where task_id=" + allTasks.getInt(1));
+				if (getTags.next() == true) {
+					while (!getTags.isAfterLast()) {
+						tags += getTags.getString(1) + " ";
 						getTags.next();
 					}
 				}
 				getTags.close();
-				
+
 				//Adjust texts
 				String title = "";
-				for(String tag: tags.split(" ")){
-					if(!tag.isEmpty()){
-						title += "["+tag+"] ";
+				for (String tag : tags.split(" ")) {
+					if (!tag.isEmpty()) {
+						title += "[" + tag + "] ";
 					}
 				}
 				title += allTasks.getString(3).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
-				
+
 				String desc = allTasks.getString(4).replace("\n", "\\n").replace("\'", "\\\'").replace("\"", "\\\"");
-				
+
 				//Add to events in FullCalendar
 				out.write("events.push({id:" + allTasks.getInt(1) + ", title:'" + title + "', start:'"
-						+ allTasks.getString(5) + "T" + allTasks.getString(6) + "', icon:'group', description: '" + desc 
-						+ "', notification:'" + notifType + "', extendedProp: {'tags': '"+tags+"'}});");
-				
+						+ allTasks.getString(5) + "T" + allTasks.getString(6) + "', icon:'group', description: '" + desc
+						+ "', notification:'" + notifType + "', extendedProp: {'tags': '" + tags + "'}});");
+
 				allTasks.next();
 			}
 			out.write("$('#calendar').fullCalendar( 'addEventSource', events);");
