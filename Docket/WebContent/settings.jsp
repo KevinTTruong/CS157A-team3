@@ -149,12 +149,12 @@
 	String newPassword = request.getParameter("newPassword");
 	
 	try{
-		if(enteredPass!=null && checkPass(out, enteredPass, account_id)){
-			if (uph.equals("true") && newPhone != null) {
+		if(enteredPass!=null && checkPass(out, enteredPass, account_id)){ // checks if inputed password is the one in the db
+			if (uph.equals("true") && newPhone != null) { // updates phone number if there is data in field
 				updatePhone(account_id, newPhone);
 				displayMessage(out, "Account info updated!");
 			}
-			if(uss.equals("true") && newPassword != null){
+			if(uss.equals("true") && newPassword != null){ // updates password if there is data in field
 				updatePassword(account_id, newPassword);
 				displayMessage(out, "Account info updated!");
 			}
@@ -187,6 +187,7 @@
 	String db = "docket";
 	String table = "account";
 	
+	// updates phone number in db
 	public void updatePhone(String account_id, String phone) throws Exception{
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
@@ -196,6 +197,7 @@
 		con.close();
 	}
 	
+	// updates password in db
 	public void updatePassword(String account_id, String newPassword) throws Exception{
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
@@ -206,6 +208,7 @@
 		con.close();
 	}
 	
+	// checks if inputed password is equal to the user's password in the db
 	public boolean checkPass(javax.servlet.jsp.JspWriter out, String password, String account_id) throws Exception{
 		if(password.isEmpty()) return false;
 		
@@ -222,6 +225,7 @@
 		return check;
 	}
 	
+	// displays message for an action
   	public void displayMessage(javax.servlet.jsp.JspWriter out, String message) throws Exception{
   		out.write("<div id=\"message\" class=\"modal-message\">");
   		out.write("<div class=\"modal-message-content\">");

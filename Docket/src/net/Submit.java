@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 
-@WebServlet("/submit")///tasks.jsp?account_id=
+@WebServlet(urlPatterns= {"/submit"})///tasks.jsp?account_id=
 public class Submit extends HttpServlet {
 	
 
@@ -33,14 +33,14 @@ public class Submit extends HttpServlet {
             	System.out.println("login id is: " + login(email, password));
             	request.setAttribute("account_id", acctId);
             	request.setAttribute("loggedIn", true);
-            	response.sendRedirect("tasks.jsp?account_id=" + acctId);
+            	response.sendRedirect("tasks.jsp?account_id=" + acctId); //redirects to tasks page after logging in
         	} catch (Exception e) {
         		System.out.println(e);
         	}
         }
     }
     
-    
+    // gets account id from db using account credentials
     public String login(String email, String password) throws Exception {
     	String user = "docket";
     	String pass = "!d0ckeT2t3";
@@ -64,35 +64,5 @@ public class Submit extends HttpServlet {
 		con.close();
 		return account_id;
     }
-    
-    /*public String createAccount(String email, String password, String phone) {
-    	String user = "docket";
-    	String pass = "!d0ckeT2t3";
-    	String db = "docket";
-    	String table = "account";
-    	boolean login = false;
-    	//Class.forName("com.mysql.cj.jdbc.Driver");
-    	String account_id = "";
-		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
-			Statement stmt = con.createStatement();
-
-			//Get the max id and iterate to create the next account_id
-			ResultSet maxId = stmt.executeQuery("select max(account_id) from " + table);
-			maxId.next();
-			account_id = Integer.toString(maxId.getInt(1) + 1);
-			
-			System.out.println("max id is: " + account_id);
-			
-			maxId.close();
-			stmt.close();
-			con.close();
-		} catch (Exception e) {
-			//MysqlDataTruncation = incorrect date format
-			System.out.println(e);
-		}
-		
-		return account_id;
-    }*/
 
 }

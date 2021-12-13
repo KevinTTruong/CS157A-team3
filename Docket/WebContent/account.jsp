@@ -19,7 +19,6 @@
 	<%
 	Class.forName("com.mysql.cj.jdbc.Driver");
 	String account_id = ""; //If account_id not retrieved, will crash
-
 	String user = "docket";
 	String pass = "!d0ckeT2t3";
 	String db = "docket";
@@ -129,28 +128,13 @@
 	src='https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js'></script>
 <script src="./script.js"></script>
 		<%
-		/*
-		TODO:
-			Pop-up message if invalid date error/Success
-			Display Notes on Calender
-			Create a new Add Note button instead of clicking on calender
-			View Note UI + Remove UI/(Modify)
-			(change parameters to removeNote if needed)
-			
-			
-		*/
-
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		String phone = request.getParameter("phone");
-
 		if (email != null && !email.isEmpty() && password != null && !password.isEmpty() && phone != null && !phone.isEmpty()) {
 			account_id = createAccount(out, email, password, phone);
 			System.out.println("current id is: " + account_id);
-        	response.sendRedirect("tasks.jsp?account_id=" + account_id);
-			//removeNote(out, account_id, note, noteStartDate, noteEndDate);
-			//TODO: pop up modal-view-note-add with prefilled values + message saying error if returned false
-			//TODO: pop up if success
+        	response.sendRedirect("tasks.jsp?account_id=" + account_id); //creates account and redirects to tasks page
 		}
 		%>
 </html>
@@ -159,7 +143,8 @@
 	String pass = "!d0ckeT2t3";
 	String db = "docket";
 	String table = "account";
-
+	
+	// adds account to db
 	public String createAccount(javax.servlet.jsp.JspWriter out, String email, String password, String phone)
 			throws Exception {
 		String account_id = "";
@@ -167,17 +152,14 @@
 			Connection con = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 			Statement stmt = con.createStatement();
-
 			//Get the max id and iterate to create the next account_id
 			ResultSet maxId = stmt.executeQuery("select max(account_id) from " + table);
 			maxId.next();
 			account_id = Integer.toString(maxId.getInt(1) + 1);
 			maxId.close();
-
 			stmt.executeUpdate("INSERT INTO " + db + "." + table + " (account_id, email, password, phone) VALUES ("
 					+ account_id + ", \"" + email + "\", \"" + password + "\", \"" + phone + "\")");
 			System.out.println("inserted " + email + ", " + password + ", " + phone);
-
 			stmt.close();
 			con.close();
 		} catch (Exception e) {
@@ -185,24 +167,21 @@
 			out.println(e);
 		}
 		return account_id;
-
 	}
-
+	
+	// deletes account from db
 	public void removeAccount(javax.servlet.jsp.JspWriter out, String account_id, String email, String password,
 			int phone) throws Exception {
 		try {
 			Connection con = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false", user, pass);
 			Statement stmt = con.createStatement();
-
 			ResultSet pass = stmt
 					.executeQuery("SELECT password FROM " + db + "." + table + " WHERE password = " + password + ";");
-
-			if (pass.getString(1).equals(password)) {
+			if (pass.getString(1).equals(password)) { // finds account in db and deletes if password is correct
 				stmt.executeUpdate("DELETE FROM " + db + "." + table + " (email, password, phone) VALUES (" + account_id
 						+ ", \"" + email + "\", \"" + password + "\", \"" + phone + "\")");
 			}
-
 			stmt.close();
 			con.close();
 		} catch (Exception e) {
@@ -210,4 +189,3 @@
 			out.println(e);
 		}
 	}%>
-

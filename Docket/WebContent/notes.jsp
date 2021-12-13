@@ -150,14 +150,14 @@
 			String update = request.getParameter("update");
 			String notification = request.getParameter("notif-type");
 	  		
-	  		if(update!=null&&update.equals("true")){
+	  		if(update!=null&&update.equals("true")){ 
   				try{
-	  				updateNote(note_id, note, noteStartDate, noteEndDate);
+	  				updateNote(note_id, note, noteStartDate, noteEndDate); // update note if update is true
 					//displayMessage(out, "Note updated!");
 	  			} catch (Exception e) {
 	  				displayMessage(out, "Error: "+e.getMessage());
 	  			}
-			}else if((note!=null && noteStartDate!=null && noteEndDate!=null) && note_id==null){
+			}else if((note!=null && noteStartDate!=null && noteEndDate!=null) && note_id==null){ // add note if all fields are entered
 	  			try{
 		  			addNote(account_id, note, noteStartDate, noteEndDate);
 		  			displayMessage(out, "Note added!");
@@ -165,7 +165,7 @@
 		  			//MysqlDataTruncation = incorrect date format
 			  		displayMessage(out, "Error: "+e.getMessage());
 			  	} 
-	  		}else if(note_id!=null){
+	  		}else if(note_id!=null){ // remove note if note_id is empty
 	  			try{
 	  				removeNote(account_id, note_id);
 	  				displayMessage(out, "Note removed!");
@@ -247,6 +247,7 @@
 	String table = "notes";
 	String relation = "take_notes";
 	
+	// adds notes to db
   	public void addNote(String account_id, String note, String start, String end) throws Exception{
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
@@ -265,6 +266,7 @@
 		con.close();
   	}	
   	
+  	// deletes notes from db
   	public void removeNote(String account_id, String note_id) throws Exception{
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
@@ -281,6 +283,7 @@
 		con.close();
   	}
   	
+  	// updates notes in db
   	public void updateNote(String note_id, String note, String start, String end) throws Exception{
   		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
 		Statement stmt = con.createStatement();
@@ -291,12 +294,12 @@
 			query += "notes=\""+note+"\"";
 			notFirst=true;
 		}
-		if(!start.isEmpty()){
+		if(!start.isEmpty()){ // if start date is updated
 			if(notFirst) query += ", ";
 			query += "start_date=\""+start+"\"";
 			notFirst=true;
 		}
-		if(!end.isEmpty()){
+		if(!end.isEmpty()){ // if end date is updated
 			if(notFirst) query += ", ";
 			query += "end_date=\""+end+"\"";
 		}
@@ -308,6 +311,7 @@
 		con.close();
   	}
   	
+  	// shows message when actions are made
   	public void displayMessage(javax.servlet.jsp.JspWriter out, String message) throws Exception{
   		out.write("<div id=\"message\" class=\"modal-message\">");
   		out.write("<div class=\"modal-message-content\">");
@@ -316,6 +320,7 @@
   		out.write("</div>");
   	}
   	
+  	// renders notes on calendar
   	public void renderNotes(javax.servlet.jsp.JspWriter out, String account_id) throws Exception{
   		//Range: current/given month
   		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false", user, pass);
