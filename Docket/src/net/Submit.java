@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 
-@WebServlet(urlPatterns= {"/submit"})///tasks.jsp?account_id=
+@WebServlet({"/submit"})///tasks.jsp?account_id=
 public class Submit extends HttpServlet {
 	
 
